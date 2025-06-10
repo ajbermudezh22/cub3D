@@ -1,9 +1,7 @@
- # cub3D
+# cub3D
 
 ## The Project
-- to create a 3D graphical representation of the inside of a maze
-- from a first-person perspective
-- by using ray-casting principles
+This Project aims to create a dynamic 3d maze which is displayed from a first-person perspective. The ray-casting principles are implemented.
 
 ## Project Requirements
 - Smooth Management of the window
@@ -32,14 +30,36 @@
 
 ## How to Use
 
-compile the program:
+Compile the program:
 ```
 make
 ```
 
-run the program:
+Run the program:
 ```
-./cub3D map.cub
+./cub3D <PATH_TO_MAP.cub>
+```
+The program takes a map file as an argument. Maps are contained in the `maps` directory.
+
+## How to Control with Keyboard
+
+- **W**: move forward
+- **S**: move backward
+- **A**: strafe left
+- **D**: strafe right
+- **←**: left arrow: rotate left
+- **→**: rotate right
+
+## How to Clone
+Clone the repository including the MiniLibX submodule:
+```
+git clone --recursive https://github.com/ajbermudezh22/cub3D.git
+```
+Or:
+```
+git clone https://github.com/ajbermudezh22/cub3D.git
+git submodule update --init --recursive
 ```
 
-
+## References
+- 
