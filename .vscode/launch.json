@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/sgoinfre/goinfre/Perso/jiepark/cub3D/src",
-      "program": "/sgoinfre/goinfre/Perso/jiepark/cub3D/src/build/Debug/outDebug",
+      "cwd": "/sgoinfre/goinfre/Perso/jiepark/cub3D/note/graphics/move_player",
+      "program": "/sgoinfre/goinfre/Perso/jiepark/cub3D/note/graphics/move_player/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
