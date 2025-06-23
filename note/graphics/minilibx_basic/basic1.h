@@ -4,8 +4,8 @@
 #include <mlx.h>
 #include <stdio.h>
 
-#define WIDTH 300
-#define HEIGHT 300
+#define WIDTH 500
+#define HEIGHT 500
 
 //
 
@@ -17,8 +17,13 @@ typedef struct s_data
 	void	*img; //image to display
 	int		*addr;
 	int		bits_per_pixel;
-	int		line_length;
+	int		line_len;
 	int		endian;
+	int		map_width;
+	int		map_height;
+	int		player_x;
+	int		player_y;
+	float	player_angle;
 } t_data;
 
 
