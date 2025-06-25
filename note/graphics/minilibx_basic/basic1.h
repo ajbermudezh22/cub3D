@@ -3,6 +3,7 @@
 
 #include <mlx.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define WIDTH 500
 #define HEIGHT 500

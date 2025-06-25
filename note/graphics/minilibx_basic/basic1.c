@@ -46,6 +46,14 @@ void	init(t_data *data)
 	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel, &data->line_len, &data->endian);
 }
 
+//on x button
+int close_window(t_data *data)
+{
+	mlx_destroy_window(data->mlx, data->win);
+	exit(0);
+	return (0);
+}
+
 int main()
 {
 	t_data	data;
@@ -64,6 +72,7 @@ int main()
 	mlx_put_image_to_window(data.mlx, data.win, data.img, 0, 0);
 
 	//part3
+	mlx_hook(data.win, 17, 0, close_window, &data); // setup even hook: Window close 
 	mlx_loop(data.mlx);
 
 	//part4
