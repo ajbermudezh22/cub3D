@@ -6,9 +6,13 @@
 
 #define WIDTH 500
 #define HEIGHT 500
+#define KEY_ESC 65307
+#define KEY_LEFT 65361  // Left arrow key
+#define KEY_RIGHT 65363 // Right arrow key
+#define KEY_UP 65362    // Up arrow key
+#define KEY_DOWN 65364  // Down arrow key
 
 //
-
 
 typedef struct s_data
 {

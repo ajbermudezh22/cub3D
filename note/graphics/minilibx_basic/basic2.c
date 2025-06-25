@@ -172,12 +172,12 @@ int	key_hook(int keycode, t_data *data)
 	new_y = data->player_y;
 	if (keycode == 'w' || keycode == 'W')
 	{
-		new_y -= move_speed;
+		//new_y -= move_speed;
 		target_angle += - PI / 2.0;
 	}
 	if (keycode == 's' || keycode == 'S')
 	{
-		new_y += move_speed;
+		//new_y += move_speed;
 		target_angle -= PI / 2.0;
 	}
 	if (keycode == 'a' || keycode == 'A')
