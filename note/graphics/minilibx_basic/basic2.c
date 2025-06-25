@@ -162,26 +162,43 @@ int	is_wall(int x, int y)
 int	key_hook(int keycode, t_data *data)
 {
 	int	move_speed;
+	float	target_angle;
 	int	new_x;
 	int	new_y;
 
 	move_speed = 10;
+	target_angle = data->player_angle;
 	new_x = data->player_x;
 	new_y = data->player_y;
 	if (keycode == 'w' || keycode == 'W')
+	{
 		new_y -= move_speed;
+		target_angle += - PI / 2.0;
+	}
 	if (keycode == 's' || keycode == 'S')
+	{
 		new_y += move_speed;
+		target_angle -= PI / 2.0;
+	}
 	if (keycode == 'a' || keycode == 'A')
+	{
 		new_x -= move_speed;
+		target_angle = - PI;
+	}	
 	if (keycode == 'd' || keycode == 'D')
+	{
 		new_x += move_speed;
-	if (new_x >= 0 && new_x < WIDTH && new_y >= 0 && new_y < HEIGHT)
+		target_angle = 0;
+	}
+
+	if ((new_x != data->player_x || new_y != data->player_y)
+        && new_x >= 0 && new_x < WIDTH && new_y >= 0 && new_y < HEIGHT)
 	{
 		if (!is_wall(new_x, new_y))
 		{
 			data->player_x = new_x;
 			data->player_y = new_y;
+			data->player_angle = target_angle;
 		}
 	}
 	clear_window(data);
@@ -197,6 +214,7 @@ int main()
 	init(&img);
 	img.player_x = WIDTH / 2;
 	img.player_y = HEIGHT / 2;
+	img.player_angle = 0;
 	clear_window(&img);
 	draw_map(&img);
 	draw_player(&img, img.player_x, img.player_y);
