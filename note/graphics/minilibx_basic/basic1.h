@@ -28,6 +28,8 @@ typedef struct s_data
 	int		player_x;
 	int		player_y;
 	float	player_angle;
+	float	player_dx; //direction vector
+	float	player_dy;
 } t_data;
 
 

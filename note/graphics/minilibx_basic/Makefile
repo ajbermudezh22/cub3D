@@ -1,5 +1,5 @@
 NAME = mlx_basic
-SRC = basic2.c
+SRC = basic3.c
 OBJ_DIR = obj
 OBJ = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 CC = gcc

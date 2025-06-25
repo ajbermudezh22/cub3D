@@ -22,6 +22,9 @@ void	init(t_data *data)
 	data->win = mlx_new_window(data->mlx, WIDTH, HEIGHT, "cub3D_window");
 	data->img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
 	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel, &data->line_len, &data->endian);
+
+	data->player_dx = cos(data->player_angle);
+	data->player_dy = cos(data->player_angle);
 }
 
 void my_mlx_pixel_put(t_data *data, int x, int y, int color)
@@ -44,7 +47,7 @@ void draw_map(t_data *data)
         x = 0;
         while (x < mapX)
         {
-            color = (map[y * mapX + x] == 1) ? 0xFFFFFF : 0x000000;
+            color = (map[y * mapX + x] == 1) ? 0xFFFFFF : 0x333333;
             px = x * cell_size;
             py = y * cell_size;
             cell_y = py;
@@ -172,12 +175,12 @@ int	key_hook(int keycode, t_data *data)
 	new_y = data->player_y;
 	if (keycode == 'w' || keycode == 'W')
 	{
-		//new_y -= move_speed;
+		new_y -= move_speed;
 		target_angle += - PI / 2.0;
 	}
 	if (keycode == 's' || keycode == 'S')
 	{
-		//new_y += move_speed;
+		new_y += move_speed;
 		target_angle -= PI / 2.0;
 	}
 	if (keycode == 'a' || keycode == 'A')
