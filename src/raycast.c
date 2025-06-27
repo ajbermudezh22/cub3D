@@ -1,11 +1,18 @@
-#include "raycast.h"
-#include "map.h"
-#include <math.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:23 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 14:57:42 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#define PI 3.141592
+#include "../includes/cub3d.h"
 
-static int	check_wall_hit(float current_x, float current_y,
-			int *hit_x, int *hit_y);
+static int	check_wall_hit(t_data *data, float current_x, float current_y);
 static float	calculate_distance(t_data *data, float current_x, float current_y);
 static void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color);
 static void	draw_hit_point(t_data *data, int hit_x, int hit_y);
@@ -33,7 +40,7 @@ float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y)
 		if (current_x < 0 || current_x >= MAP_WIDTH ||
 			current_y < 0 || current_y >= HEIGHT)
 			break ;
-		if (check_wall_hit(current_x, current_y, hit_x, hit_y))
+		if (check_wall_hit(data, current_x, current_y))
 			return (calculate_distance(data, current_x, current_y));
 	}
 	*hit_x = (int)current_x;
@@ -41,22 +48,18 @@ float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y)
 	return (calculate_distance(data, current_x, current_y));
 }
 
-static int	check_wall_hit(float current_x, float current_y,
-				int *hit_x, int *hit_y)
+static int	check_wall_hit(t_data *data, float current_x, float current_y)
 {
 	int	map_x;
 	int	map_y;
 
-	map_x = (int)current_x / mapS;
-	map_y = (int)current_y / mapS;
-	if (map_x >= 0 && map_x < mapX && map_y >= 0 && map_y < mapY)
+	map_x = (int)current_x / TILE_SIZE;
+	map_y = (int)current_y / TILE_SIZE;
+	if (map_x >= 0 && map_x < data->config.map_width
+		&& map_y >= 0 && map_y < data->config.map_height)
 	{
-		if (map[map_y * mapX + map_x] == 1)
-		{
-			*hit_x = (int)current_x;
-			*hit_y = (int)current_y;
+		if (data->config.map_grid[map_y][map_x] == '1')
 			return (1);
-		}
 	}
 	return (0);
 }

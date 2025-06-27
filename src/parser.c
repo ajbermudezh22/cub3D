@@ -1,11 +1,17 @@
-#include "parser.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:19 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 14:03:23 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// Initialize config structure
+#include "../includes/cub3d.h"
+
 void init_config(t_config *config)
 {
     config->north_texture_path = NULL;
@@ -32,74 +38,57 @@ int parse_color(char *line, int *r, int *g, int *b)
     char *token;
     char *line_copy = strdup(line);
     
-    // Skip identifier (F or C)
     token = strtok(line_copy, " \t");
     if (!token) {
         free(line_copy);
         return 0;
     }
-    
-    // Get RGB values
     token = strtok(NULL, ",");
     if (!token) {
         free(line_copy);
         return 0;
     }
     *r = atoi(token);
-    
     token = strtok(NULL, ",");
     if (!token) {
         free(line_copy);
         return 0;
     }
     *g = atoi(token);
-    
     token = strtok(NULL, " \t\n");
     if (!token) {
         free(line_copy);
         return 0;
     }
     *b = atoi(token);
-    
     free(line_copy);
-    
-    // Validate range [0,255]
     if (*r < 0 || *r > 255 || *g < 0 || *g > 255 || *b < 0 || *b > 255)
         return 0;
-    
     return 1;
 }
 
-// Parse texture path from line and resolve relative to .cub file
 int parse_texture_path(char *line, char **path, char *cub_file_dir)
 {
     char *token;
     char *line_copy = strdup(line);
     
-    // Skip identifier (NO, SO, WE, EA)
     token = strtok(line_copy, " \t");
     if (!token) {
         free(line_copy);
         return 0;
     }
-    
-    // Get path
     token = strtok(NULL, " \t\n");
     if (!token) {
         free(line_copy);
         return 0;
     }
-    
-    // If path is relative, make it relative to .cub file directory
-    if (token[0] != '/') {
-        // Relative path - combine with .cub file directory
+    if (token[0] != '/')
+	{
         *path = malloc(strlen(cub_file_dir) + strlen(token) + 2);
         sprintf(*path, "%s/%s", cub_file_dir, token);
-    } else {
-        // Absolute path - use as is
-        *path = strdup(token);
     }
-    
+	else
+		*path = strdup(token);
     free(line_copy);
     return 1;
 }

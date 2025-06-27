@@ -1,8 +1,16 @@
-#include "window.h"
-#include "map.h"
-#include "raycast.h"
-#include <math.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   window.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:39 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 15:43:09 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
 
 void	init_mlx(t_data *data)
 {
@@ -92,6 +100,16 @@ static void	handle_movement(int keycode, t_data *data,
 		*new_x -= data->player_dx * move_speed;
 		*new_y -= data->player_dy * move_speed;
 	}
+	if (keycode == 'a' || keycode == 'A')
+	{
+		*new_x -= data->player_dy *  move_speed;
+		*new_y += data->player_dx *  move_speed;
+	}
+	if (keycode == 'd' || keycode == 'D')
+	{
+		*new_x += data->player_dy * move_speed;
+		*new_y -= data->player_dx * move_speed;
+	}
 }
 
 static void	handle_rotation(int keycode, float *new_angle)
@@ -99,35 +117,80 @@ static void	handle_rotation(int keycode, float *new_angle)
 	float	rotation_speed;
 
 	rotation_speed = 0.1;
-	if (keycode == 'a' || keycode == 'A')
-		*new_angle += rotation_speed;
-	if (keycode == 'd' || keycode == 'D')
+	if (keycode == KEY_LEFT)
 		*new_angle -= rotation_speed;
+	if (keycode == KEY_RIGHT)
+		*new_angle += rotation_speed;
 }
 
+// int	key_hook(int keycode, t_data *data)
+// {
+// 	float	new_x;
+// 	float	new_y;
+// 	float	new_angle;
+
+// 	new_x = data->player_x;
+// 	new_y = data->player_y;
+// 	new_angle = data->player_angle;
+// 	handle_movement(keycode, data, &new_x, &new_y);
+// 	handle_rotation(keycode, &new_angle);
+// 	if (keycode == ' ')
+// 		data->view_mode = (data->view_mode + 1) % 3;
+// 	if (!is_wall((int)new_x, (int)new_y) &&
+// 		new_x >= 10 && new_x < MAP_WIDTH - 10 &&
+// 		new_y >= 10 && new_y < HEIGHT - 10)
+// 	{
+// 		data->player_x = new_x;
+// 		data->player_y = new_y;
+// 	}
+// 	data->player_angle = new_angle;
+// 	if (data->player_angle < 0)
+//         data->player_angle += 2 * PI;
+// 	if (data->player_angle > 2 * PI)
+//         data->player_angle -= 2 * PI;
+// 	data->player_dx = cos(data->player_angle);
+// 	data->player_dy = sin(data->player_angle);
+// 	render_complete_view(data);
+// 	return (0);
+// }
+
+// ...existing code...
 int	key_hook(int keycode, t_data *data)
 {
-	float	new_x;
-	float	new_y;
-	float	new_angle;
+    float	new_x;
+    float	new_y;
+    float	new_angle;
+    // float	old_x;
+    float	old_y;
 
-	new_x = data->player_x;
-	new_y = data->player_y;
-	new_angle = data->player_angle;
-	handle_movement(keycode, data, &new_x, &new_y);
-	handle_rotation(keycode, &new_angle);
-	if (keycode == ' ')
-		data->view_mode = (data->view_mode + 1) % 3;
-	if (!is_wall((int)new_x, (int)new_y) &&
-		new_x >= 10 && new_x < MAP_WIDTH - 10 &&
-		new_y >= 10 && new_y < HEIGHT - 10)
-	{
-		data->player_x = new_x;
-		data->player_y = new_y;
-	}
-	data->player_angle = new_angle;
-	data->player_dx = cos(data->player_angle);
-	data->player_dy = sin(data->player_angle);
-	render_complete_view(data);
-	return (0);
+    new_x = data->player_x;
+    new_y = data->player_y;
+    // old_x = data->player_x;
+    old_y = data->player_y;
+    new_angle = data->player_angle;
+    handle_movement(keycode, data, &new_x, &new_y);
+    handle_rotation(keycode, &new_angle);
+    if (keycode == ' ')
+        data->view_mode = (data->view_mode + 1) % 3;
+    
+    // Implement wall sliding for smoother, more robust collision.
+    // This checks X and Y movement independently.
+    if (!is_wall((int)new_x, (int)old_y))
+    {
+        data->player_x = new_x;
+    }
+    if (!is_wall((int)data->player_x, (int)new_y))
+    {
+        data->player_y = new_y;
+    }
+
+    data->player_angle = new_angle;
+    if (data->player_angle < 0)
+        data->player_angle += 2 * PI;
+    if (data->player_angle > 2 * PI)
+        data->player_angle -= 2 * PI;
+    data->player_dx = cos(data->player_angle);
+    data->player_dy = sin(data->player_angle);
+    render_complete_view(data);
+    return (0);
 }
