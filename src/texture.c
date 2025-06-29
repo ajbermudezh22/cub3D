@@ -266,11 +266,11 @@ void draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_resul
 void render_3d_view_textured(t_data *data, t_texture *tex)
 {
     float fov = FOV * (M_PI / 180.0f); // Convert FOV to radians
-    float start_angle = data->player_angle - (fov / 2);
     
     for (int x = 0; x < VIEW_WIDTH; x++) {
-        // Calculate ray angle for this screen column
-        float ray_angle = start_angle + (fov * x / VIEW_WIDTH);
+        // Fix distortion: use proper projection angle calculation to maintain equal angular spacing
+        float camera_x = 2 * x / (float)VIEW_WIDTH - 1; // x-coordinate in camera space (-1 to 1)
+        float ray_angle = data->player_angle + atan(camera_x * tan(fov / 2));
         
         // Cast ray and get result with texture info
         t_ray_result ray_result = cast_ray_with_texture_info(data, ray_angle);

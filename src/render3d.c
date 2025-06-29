@@ -233,11 +233,11 @@ int blend_colors(int color1, int color2, float alpha)
 void render_3d_view(t_data *data)
 {
 	float fov = FOV * DR; // Convert FOV to radians
-	float start_angle = data->player_angle - (fov / 2);
 	
 	for (int x = 0; x < VIEW_WIDTH; x++) {
-		// Calculate ray angle for this screen column
-		float ray_angle = start_angle + (fov * x / VIEW_WIDTH);
+		// Fix distortion: use proper projection angle calculation to maintain equal angular spacing
+		float camera_x = 2 * x / (float)VIEW_WIDTH - 1; // x-coordinate in camera space (-1 to 1)
+		float ray_angle = data->player_angle + atan(camera_x * tan(fov / 2));
 		
 		// Cast ray and get distance
 		float distance = cast_ray_3d(data, ray_angle);
