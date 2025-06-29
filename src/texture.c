@@ -1,11 +1,17 @@
-#include "texture.h"
-#include "main.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   texture.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:34 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 15:38:52 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+#include "../includes/cub3d.h"
 
-// Load texture files from .xpm files (from .cub file paths)
 int load_textures(void *mlx, t_texture *tex, char *north_path, char *south_path, 
                  char *west_path, char *east_path)
 {
@@ -200,8 +206,8 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     
     // Convert to pixel distance and apply fisheye correction
     result.distance = perp_wall_dist * mapS;
-    float angle_diff = ray_angle - data->player_angle;
-    result.distance = result.distance * cos(angle_diff);
+    // float angle_diff = ray_angle - data->player_angle;
+    // result.distance = result.distance * cos(angle_diff);
     
     return result;
 }

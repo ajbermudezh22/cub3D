@@ -1,8 +1,16 @@
-#include "map.h"
-#include <math.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:11 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 14:03:05 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#define PI 3.141592
+#include "../includes/cub3d.h"
 
 // Global variables for map
 int mapX, mapY, mapS = 24;

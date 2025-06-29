@@ -1,10 +1,17 @@
-#include "main.h"
-#include <math.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render3d.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:27 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 14:03:32 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#define PI 3.141592
-#define DR 0.0174533  // One degree in radians (PI/180)
+#include "../includes/cub3d.h"
 
-// External map variables from main file
 extern int mapX, mapY, mapS;
 extern int map[];
 
