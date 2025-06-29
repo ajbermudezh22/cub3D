@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 18:07:14 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:38:06 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,34 @@ typedef struct s_ray
 	int		color;
 }	t_ray;
 
+typedef struct s_thick_line_params
+{
+	float	dx;
+	float	dy;
+	float	steps;
+	float	x;
+	float	y;
+}	t_thick_line_params;
+
+typedef struct s_draw_line_params
+{
+	float	end_x;
+	float	end_y;
+	int		thickness;
+}	t_draw_line_params;
+
+typedef struct s_ray_params
+{
+	int		num_rays;
+	float	fov;
+	float	start_angle;
+	float	ray_angle;
+	int		hit_x;
+	int		hit_y;
+	float	distance;
+	int		color;
+}	t_ray_params;
+
 typedef struct s_data
 {
 	void		*mlx;
@@ -141,14 +169,19 @@ typedef struct s_ray_result
 } t_ray_result;
 
 // draw.c
-void	draw_direction_line(t_data *data);
-void	draw_thick_line(t_data *data, float end_x, float end_y,
-	int thickness);
-void	draw_player_2d(t_data *data);
+void	cast_and_draw_ray(t_data *data, t_ray_params *p, int i);
 void	draw_rays_2d(t_data *data);
-void	init_ray_params(t_data *data, t_ray *ray, int ray_index);
-void	draw_line_pixels(t_data *data, t_line *line);
-void	init_line_params(t_data *data, t_line *line);
+void	draw_player_2d(t_data *data);
+
+// draw_utils.c
+void	draw_direction_line(t_data *data);
+void	draw_thick_line(t_data *data, t_draw_line_params *line_params);
+
+void	draw_player_circle(t_data *data);
+
+// draw_utils.c
+void	draw_direction_line(t_data *data);
+
 
 // main.c
 void my_mlx_pixel_put(t_data *data, int x, int y, int color);

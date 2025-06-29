@@ -20,6 +20,7 @@ LIBFT     := libft/libft.a
 SRC_DIR	  := src
 SRCS_LIST := main.c \
 			 draw.c \
+			 draw_utils.c \
 			 map_utils.c \
              map.c \
 			 parser.c \
