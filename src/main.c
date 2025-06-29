@@ -41,11 +41,13 @@ static void	cleanup_program(t_data *data)
 static void	print_controls(void)
 {
 	printf("Controls:\n");
-	printf("W/S - Move forward/backward\n");
-	printf("A/D - Turn left/right\n");
-	printf("Arrow Keys - Turn left/right\n");
-	printf("ESC - Exit program\n");
+	printf("W - Move forward\n");
+	printf("S - Move backward\n");
+	printf("A - Strafe left\n");
+	printf("D - Strafe right\n");
+	printf("Left/Right Arrow Keys - Turn left/right\n");
 	printf("SPACE - Switch view modes\n");
+	printf("ESC - Exit program\n");
 }
 
 int	main(int argc, char **argv)

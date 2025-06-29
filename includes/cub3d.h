@@ -133,6 +133,7 @@ float	get_player_angle(char dir);
 void	setup_map_from_config(t_data *data);
 void	draw_map_2d(t_data *data);
 int		is_wall(t_data *data, int x, int y);
+int		is_wall_with_buffer(t_data *data, float x, float y, float buffer);
 
 // parser.c
 int     parse_cub_file(char *filename, t_config *config);

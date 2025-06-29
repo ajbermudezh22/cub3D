@@ -127,3 +127,28 @@ int	is_wall(t_data *data, int x, int y)
 		return (1);
 	return (data->map.grid[map_y * data->map.width + map_x]);
 }
+
+int	is_wall_with_buffer(t_data *data, float x, float y, float buffer)
+{
+	// Check collision with buffer distance from walls
+	int	map_x_min = (int)((x - buffer) / data->map.tile_size);
+	int	map_x_max = (int)((x + buffer) / data->map.tile_size);
+	int	map_y_min = (int)((y - buffer) / data->map.tile_size);
+	int	map_y_max = (int)((y + buffer) / data->map.tile_size);
+	
+	// Check boundaries
+	if (map_x_min < 0 || map_x_max >= data->map.width
+		|| map_y_min < 0 || map_y_max >= data->map.height)
+		return (1);
+	
+	// Check all tiles within buffer area
+	for (int my = map_y_min; my <= map_y_max; my++)
+	{
+		for (int mx = map_x_min; mx <= map_x_max; mx++)
+		{
+			if (data->map.grid[my * data->map.width + mx])
+				return (1);
+		}
+	}
+	return (0);
+}
