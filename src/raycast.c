@@ -41,11 +41,17 @@ float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y)
 			current_y < 0 || current_y >= HEIGHT)
 			break ;
 		if (check_wall_hit(data, current_x, current_y))
-			return (calculate_distance(data, current_x, current_y));
+		{
+			float distance = calculate_distance(data, current_x, current_y);
+			float angle_diff = ray_angle - data->player_angle;
+			return (distance * cos(angle_diff));
+		}
 	}
 	*hit_x = (int)current_x;
 	*hit_y = (int)current_y;
-	return (calculate_distance(data, current_x, current_y));
+	float distance = calculate_distance(data, current_x, current_y);
+	float angle_diff = ray_angle - data->player_angle;
+	return (distance * cos(angle_diff));
 }
 
 static int	check_wall_hit(t_data *data, float current_x, float current_y)

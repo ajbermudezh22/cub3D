@@ -204,8 +204,8 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     
     // Convert to pixel distance and apply fisheye correction
     result.distance = perp_wall_dist * data->map.tile_size;
-    // float angle_diff = ray_angle - data->player_angle;
-    // result.distance = result.distance * cos(angle_diff);
+    float angle_diff = ray_angle - data->player_angle;
+    result.distance = result.distance * cos(angle_diff);
     
     return result;
 }
