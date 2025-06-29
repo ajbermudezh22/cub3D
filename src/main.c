@@ -1,7 +1,16 @@
-#include "main.h"
-#include "map.h"
-#include "window.h"
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 11:04:38 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 14:18:52 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -9,9 +18,9 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 
 	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
 	{
-		dst = (char *)data->addr + (y * data->line_len + x * 
-			(data->bits_per_pixel / 8));
-		*(unsigned int*)dst = color;
+		dst = (char *)data->addr + (y * data->line_len + x
+				* (data->bits_per_pixel / 8));
+		*(unsigned int *) dst = color;
 	}
 }
 
@@ -25,8 +34,8 @@ static void	cleanup_program(t_data *data)
 {
 	free_textures(data->mlx, &data->texture);
 	free_config(&data->config);
-	if (map)
-		free(map);
+	if (data->map.grid)
+		free(data->map.grid);
 }
 
 static void	print_controls(void)
@@ -41,6 +50,8 @@ int	main(int argc, char **argv)
 {
 	t_data	img;
 
+	// Initialize the data structure
+	img.map.grid = NULL;
 	if (argc != 2)
 	{
 		printf("Usage: %s <path_to_map.cub>\n", argv[0]);
@@ -55,7 +66,7 @@ int	main(int argc, char **argv)
 	init_program(&img);
 	render_complete_view(&img);
 	print_controls();
-	mlx_hook(img.win, 2, 1L<<0, key_hook, &img);
+	mlx_hook(img.win, 2, 1L << 0, key_hook, &img);
 	mlx_loop(img.mlx);
 	cleanup_program(&img);
 	return (0);

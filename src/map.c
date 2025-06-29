@@ -1,12 +1,16 @@
-#include "map.h"
-#include <math.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:11 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 14:03:05 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#define PI 3.141592
-
-// Global variables for map
-int mapX, mapY, mapS = 24;
-int *map = NULL;
+#include "../includes/cub3d.h"
 
 float	get_player_angle(char dir)
 {
@@ -23,10 +27,12 @@ float	get_player_angle(char dir)
 
 static void	setup_player_position(t_data *data)
 {
-	data->map_width = mapX;
-	data->map_height = mapY;
-	data->player_x = data->config.player_x * mapS + mapS / 2;
-	data->player_y = data->config.player_y * mapS + mapS / 2;
+	data->map_width = data->map.width;
+	data->map_height = data->map.height;
+	data->player_x = data->config.player_x * data->map.tile_size
+		+ data->map.tile_size / 2;
+	data->player_y = data->config.player_y * data->map.tile_size
+		+ data->map.tile_size / 2;
 	data->player_angle = get_player_angle(data->config.player_dir);
 	data->player_dx = cos(data->player_angle);
 	data->player_dy = sin(data->player_angle);
@@ -37,26 +43,27 @@ void	setup_map_from_config(t_data *data)
 	int	x;
 	int	y;
 
-	mapX = data->config.map_width;
-	mapY = data->config.map_height;
-	if (map)
-		free(map);
-	map = malloc(mapX * mapY * sizeof(int));
-	if (!map)
+	data->map.width = data->config.map_width;
+	data->map.height = data->config.map_height;
+	data->map.tile_size = 24;
+	if (data->map.grid)
+		free(data->map.grid);
+	data->map.grid = malloc(data->map.width * data->map.height * sizeof(int));
+	if (!data->map.grid)
 	{
 		printf("Error: Failed to allocate memory for map\n");
 		exit(1);
 	}
 	y = -1;
-	while (++y < mapY)
+	while (++y < data->map.height)
 	{
 		x = -1;
-		while (++x < mapX)
+		while (++x < data->map.width)
 		{
 			if (data->config.map_grid[y][x] == '1')
-				map[y * mapX + x] = 1;
+				data->map.grid[y * data->map.width + x] = 1;
 			else
-				map[y * mapX + x] = 0;
+				data->map.grid[y * data->map.width + x] = 0;
 		}
 	}
 	setup_player_position(data);
@@ -69,15 +76,15 @@ static void	draw_cell(t_data *data, int x, int y, int color)
 	int	px;
 	int	py;
 
-	px = x * mapS;
-	py = y * mapS;
+	px = x * data->map.tile_size;
+	py = y * data->map.tile_size;
 	if (px >= MAP_WIDTH || py >= HEIGHT)
 		return ;
 	cell_y = py - 1;
-	while (++cell_y < py + mapS && cell_y < HEIGHT)
+	while (++cell_y < py + data->map.tile_size && cell_y < HEIGHT)
 	{
 		cell_x = px - 1;
-		while (++cell_x < px + mapS && cell_x < MAP_WIDTH)
+		while (++cell_x < px + data->map.tile_size && cell_x < MAP_WIDTH)
 		{
 			if (cell_x == px || cell_y == py)
 				my_mlx_pixel_put(data, cell_x, cell_y, 0x666666);
@@ -94,12 +101,12 @@ void	draw_map_2d(t_data *data)
 	int	color;
 
 	y = -1;
-	while (++y < mapY)
+	while (++y < data->map.height)
 	{
 		x = -1;
-		while (++x < mapX)
+		while (++x < data->map.width)
 		{
-			if (map[y * mapX + x] == 1)
+			if (data->map.grid[y * data->map.width + x] == 1)
 				color = 0xFFFFFF;
 			else
 				color = 0x333333;
@@ -108,14 +115,15 @@ void	draw_map_2d(t_data *data)
 	}
 }
 
-int	is_wall(int x, int y)
+int	is_wall(t_data *data, int x, int y)
 {
 	int	map_x;
 	int	map_y;
 
-	map_x = x / mapS;
-	map_y = y / mapS;
-	if (map_x < 0 || map_x >= mapX || map_y < 0 || map_y >= mapY)
+	map_x = x / data->map.tile_size;
+	map_y = y / data->map.tile_size;
+	if (map_x < 0 || map_x >= data->map.width
+		|| map_y < 0 || map_y >= data->map.height)
 		return (1);
-	return (map[map_y * mapX + map_x]);
+	return (data->map.grid[map_y * data->map.width + map_x]);
 }

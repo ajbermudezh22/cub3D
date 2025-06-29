@@ -1,11 +1,17 @@
-#include "texture.h"
-#include "main.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   texture.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/27 13:21:34 by albbermu          #+#    #+#             */
+/*   Updated: 2025/06/27 15:38:52 by albbermu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+#include "../includes/cub3d.h"
 
-// Load texture files from .xpm files (from .cub file paths)
 int load_textures(void *mlx, t_texture *tex, char *north_path, char *south_path, 
                  char *west_path, char *east_path)
 {
@@ -110,8 +116,6 @@ int get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y)
 t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
 {
     t_ray_result result;
-    extern int mapX, mapY, mapS;
-    extern int map[];
     
     // Normalize angle
     while (ray_angle < 0) ray_angle += 2 * M_PI;
@@ -130,26 +134,26 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     float delta_dist_y = fabs(1.0f / dy);
     
     // Current map position
-    int map_x = (int)(px / mapS);
-    int map_y = (int)(py / mapS);
+    int map_x = (int)(px / data->map.tile_size);
+    int map_y = (int)(py / data->map.tile_size);
     
     // Calculate step and initial side_dist
     float side_dist_x, side_dist_y;
     
     if (dx < 0) {
         result.step_x = -1;
-        side_dist_x = (px / mapS - map_x) * delta_dist_x;
+        side_dist_x = (px / data->map.tile_size - map_x) * delta_dist_x;
     } else {
         result.step_x = 1;
-        side_dist_x = (map_x + 1.0f - px / mapS) * delta_dist_x;
+        side_dist_x = (map_x + 1.0f - px / data->map.tile_size) * delta_dist_x;
     }
     
     if (dy < 0) {
         result.step_y = -1;
-        side_dist_y = (py / mapS - map_y) * delta_dist_y;
+        side_dist_y = (py / data->map.tile_size - map_y) * delta_dist_y;
     } else {
         result.step_y = 1;
-        side_dist_y = (map_y + 1.0f - py / mapS) * delta_dist_y;
+        side_dist_y = (map_y + 1.0f - py / data->map.tile_size) * delta_dist_y;
     }
     
     // Perform DDA
@@ -168,8 +172,8 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
         }
         
         // Check if ray has hit a wall
-        if (map_x < 0 || map_x >= mapX || map_y < 0 || map_y >= mapY || 
-            map[map_y * mapX + map_x] == 1) {
+        if (map_x < 0 || map_x >= data->map.width || map_y < 0 || map_y >= data->map.height || 
+            data->map.grid[map_y * data->map.width + map_x] == 1) {
             hit = 1;
         }
     }
@@ -177,11 +181,11 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     // Calculate distance
     float perp_wall_dist;
     if (result.side == 0) {
-        perp_wall_dist = (map_x - px / mapS + (1 - result.step_x) / 2) / dx;
-        result.wall_x = py / mapS + perp_wall_dist * dy;
+        perp_wall_dist = (map_x - px / data->map.tile_size + (1 - result.step_x) / 2) / dx;
+        result.wall_x = py / data->map.tile_size + perp_wall_dist * dy;
     } else {
-        perp_wall_dist = (map_y - py / mapS + (1 - result.step_y) / 2) / dy;
-        result.wall_x = px / mapS + perp_wall_dist * dx;
+        perp_wall_dist = (map_y - py / data->map.tile_size + (1 - result.step_y) / 2) / dy;
+        result.wall_x = px / data->map.tile_size + perp_wall_dist * dx;
     }
     result.wall_x -= floor(result.wall_x);
     
@@ -199,9 +203,9 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     }
     
     // Convert to pixel distance and apply fisheye correction
-    result.distance = perp_wall_dist * mapS;
-    float angle_diff = ray_angle - data->player_angle;
-    result.distance = result.distance * cos(angle_diff);
+    result.distance = perp_wall_dist * data->map.tile_size;
+    // float angle_diff = ray_angle - data->player_angle;
+    // result.distance = result.distance * cos(angle_diff);
     
     return result;
 }
@@ -212,10 +216,8 @@ void draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_resul
 {
     if (ray_result.distance <= 0) ray_result.distance = 1; // Prevent division by zero
     
-    extern int mapS;
-    
     // Calculate wall height
-    float wall_height_f = (WALL_HEIGHT * mapS) / ray_result.distance;
+    float wall_height_f = (WALL_HEIGHT * data->map.tile_size) / ray_result.distance;
     int wall_start = (screen_height / 2) - (wall_height_f / 2);
     int wall_end = (screen_height / 2) + (wall_height_f / 2);
     
