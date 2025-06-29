@@ -28,19 +28,10 @@ static int	check_wall_hit(t_data *data, float current_x, float current_y)
 	return (0);
 }
 
-static float	calculate_distance(t_data *data, float x, float y)
+static float	calculate_distance(t_data *data, float current_x, float current_y)
 {
-	float	dx;
-	float	dy;
-
-	dx = x - data->player_x;
-	dy = y - data->player_y;
-	return (sqrt(dx * dx + dy * dy));
-}
-
-static float	get_corrected_distance(t_data *data, float x, float y, float angle)
-{
-	return (calculate_distance(data, x, y) * cos(angle - data->player_angle));
+	return (sqrt(pow(current_x - data->player_x, 2)
+			+ pow(current_y - data->player_y, 2)));
 }
 
 float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y)
@@ -49,26 +40,34 @@ float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y)
 	float	dy;
 	float	current_x;
 	float	current_y;
+	float	step_size;
+	float	distance;
+	float	angle_diff;
 
 	dx = cos(ray_angle);
 	dy = sin(ray_angle);
 	current_x = data->player_x;
 	current_y = data->player_y;
+	step_size = 0.5;
 	while (1)
 	{
-		current_x += dx * 0.5;
-		current_y += dy * 0.5;
+		current_x += dx * step_size;
+		current_y += dy * step_size;
 		if (current_x < 0 || current_x >= MAP_WIDTH
 			|| current_y < 0 || current_y >= HEIGHT)
 			break ;
 		if (check_wall_hit(data, current_x, current_y))
 		{
+			distance = calculate_distance(data, current_x, current_y);
+			angle_diff = ray_angle - data->player_angle;
 			*hit_x = (int)current_x;
 			*hit_y = (int)current_y;
-			return (get_corrected_distance(data, current_x, current_y, ray_angle));
+			return (distance * cos(angle_diff));
 		}
 	}
 	*hit_x = (int)current_x;
 	*hit_y = (int)current_y;
-	return (get_corrected_distance(data, current_x, current_y, ray_angle));
+	distance = calculate_distance(data, current_x, current_y);
+	angle_diff = ray_angle - data->player_angle;
+	return (distance * cos(angle_diff));
 }

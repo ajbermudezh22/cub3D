@@ -22,7 +22,7 @@ else
 	MLX_INCLUDES = -I$(MLX_PATH)
 endif
 
-SOURCES = main.c render3d.c texture.c parser.c map.c window.c raycast.c
+SOURCES = main.c main_utils.c render3d.c texture.c parser.c map.c map_utils.c map_render.c window.c window_init.c window_events.c window_helpers.c raycast.c raycast_draw.c
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(NAME)

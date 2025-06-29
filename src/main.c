@@ -20,52 +20,16 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	{
 		dst = (char *)data->addr + (y * data->line_len + x
 				* (data->bits_per_pixel / 8));
-		*(unsigned int *) dst = color;
+		*(unsigned int *)dst = color;
 	}
-}
-
-static void	init_program(t_data *data)
-{
-	init_mlx(data);
-	init_textures(data);
-}
-
-static void	cleanup_program(t_data *data)
-{
-	free_textures(data->mlx, &data->texture);
-	free_config(&data->config);
-	if (data->map.grid)
-		free(data->map.grid);
-}
-
-static void	print_controls(void)
-{
-	printf("Controls:\n");
-	printf("W - Move forward\n");
-	printf("S - Move backward\n");
-	printf("A - Strafe left\n");
-	printf("D - Strafe right\n");
-	printf("Left/Right Arrow Keys - Turn left/right\n");
-	printf("SPACE - Switch view modes\n");
-	printf("ESC - Exit program\n");
 }
 
 int	main(int argc, char **argv)
 {
 	t_data	img;
 
-	// Initialize the data structure
-	img.map.grid = NULL;
-	if (argc != 2)
-	{
-		printf("Usage: %s <path_to_map.cub>\n", argv[0]);
+	if (check_and_init(argc, argv, &img))
 		return (1);
-	}
-	if (!parse_cub_file(argv[1], &img.config))
-	{
-		printf("Error: Failed to parse .cub file\n");
-		return (1);
-	}
 	setup_map_from_config(&img);
 	init_program(&img);
 	render_complete_view(&img);
