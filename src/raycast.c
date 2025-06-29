@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:23 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 18:02:26 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/29 20:07:37 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,76 +58,31 @@ int	check_wall_hit(t_data *data, float current_x, float current_y)
 
 float	calculate_distance(t_data *data, float current_x, float current_y)
 {
-	return (sqrt(pow(current_x - data->player_x, 2) +
-		pow(current_y - data->player_y, 2)));
+	return (sqrt(pow(current_x - data->player_x, 2)
+			+ pow(current_y - data->player_y, 2)));
 }
 
 void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color)
 {
-	float	dx;
-	float	dy;
-	float	steps;
-	float	x;
-	float	y;
-	int		step;
+	t_draw_ray_line_params	line;
+	int						step;
 
 	if (hit_x >= MAP_WIDTH)
 		return ;
-	dx = hit_x - data->player_x;
-	dy = hit_y - data->player_y;
-	steps = fmax(fabs(dx), fabs(dy));
-	if (steps <= 0)
+	line.dx = hit_x - data->player_x;
+	line.dy = hit_y - data->player_y;
+	line.steps = fmax(fabs(line.dx), fabs(line.dy));
+	if (line.steps <= 0)
 		return ;
-	dx /= steps;
-	dy /= steps;
-	x = data->player_x;
-	y = data->player_y;
+	line.dx /= line.steps;
+	line.dy /= line.steps;
+	line.x = data->player_x;
+	line.y = data->player_y;
 	step = -1;
-	while (++step < (int)steps && x < MAP_WIDTH)
+	while (++step < (int)line.steps && line.x < MAP_WIDTH)
 	{
-		my_mlx_pixel_put(data, (int)x, (int)y, color);
-		x += dx;
-		y += dy;
+		my_mlx_pixel_put(data, (int)line.x, (int)line.y, color);
+		line.x += line.dx;
+		line.y += line.dy;
 	}
 }
-
-void	draw_hit_point(t_data *data, int hit_x, int hit_y)
-{
-	if (hit_x >= MAP_WIDTH)
-		return ;
-	my_mlx_pixel_put(data, hit_x, hit_y, 0xFF0000);
-	my_mlx_pixel_put(data, hit_x - 1, hit_y, 0xFF0000);
-	my_mlx_pixel_put(data, hit_x + 1, hit_y, 0xFF0000);
-	my_mlx_pixel_put(data, hit_x, hit_y - 1, 0xFF0000);
-	my_mlx_pixel_put(data, hit_x, hit_y + 1, 0xFF0000);
-}
-
-void	draw_player_circle(t_data *data)
-{
-	int	size;
-	int	x;
-	int	y;
-	int	px;
-	int	py;
-
-	size = 8;
-	if (data->player_x >= MAP_WIDTH)
-		return ;
-	y = -size - 1;
-	while (++y <= size)
-	{
-		x = -size - 1;
-		while (++x <= size)
-		{
-			if (x * x + y * y <= size * size)
-			{
-				px = data->player_x + x;
-				py = data->player_y + y;
-				if (px < MAP_WIDTH)
-					my_mlx_pixel_put(data, px, py, 0xFFFF00);
-			}
-		}
-	}
-}
-
-

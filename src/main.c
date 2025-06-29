@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 11:04:38 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 17:40:53 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:53:21 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,21 @@ static void	init_program(t_data *data)
 	init_textures(data);
 }
 
-static void	cleanup_program(t_data *data)
+void	cleanup_program(t_data *data)
 {
 	if (data->map)
 		free(data->map);
 	free_textures(data->mlx, &data->texture);
 	free_config(&data->config);
+	if (data->img)
+		mlx_destroy_image(data->mlx, data->img);
+	if (data->win)
+		mlx_destroy_window(data->mlx, data->win);
+	if (data->mlx)
+	{
+		mlx_destroy_display(data->mlx);
+		free(data->mlx);
+	}
 }
 
 static void	print_controls(void)
@@ -43,6 +52,7 @@ static void	print_controls(void)
 	printf("Controls:\n");
 	printf("W/S - Move forward/backward\n");
 	printf("A/D - Turn left/right\n");
+	printf("ESC - Exit program\n");
 	printf("SPACE - Switch view modes\n");
 }
 
@@ -66,6 +76,7 @@ int	main(int argc, char **argv)
 	render_complete_view(&img);
 	print_controls();
 	mlx_hook(img.win, 2, 1L << 0, key_hook, &img);
+	mlx_hook(img.win, 17, 0L, close_hook, &img);
 	mlx_loop(img.mlx);
 	cleanup_program(&img);
 	return (0);

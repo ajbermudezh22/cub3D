@@ -28,7 +28,8 @@ SRCS_LIST := main.c \
              texture.c \
              raycast.c \
 			 raycast_utils.c \
-             window.c
+             window.c \
+			 window_utils.c
 SRCS      := $(addprefix $(SRC_DIR)/, $(SRCS_LIST))
 
 # Build objs into a parallel directory tree under objs/

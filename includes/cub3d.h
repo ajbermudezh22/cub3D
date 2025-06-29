@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 18:38:06 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/29 20:07:37 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,15 @@ typedef struct s_thick_line_params
 	float	y;
 }	t_thick_line_params;
 
+typedef struct s_draw_ray_line_params
+{
+	float	dx;
+	float	dy;
+	float	steps;
+	float	x;
+	float	y;
+}	t_draw_ray_line_params;
+
 typedef struct s_draw_line_params
 {
 	float	end_x;
@@ -184,7 +193,8 @@ void	draw_direction_line(t_data *data);
 
 
 // main.c
-void my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void	cleanup_program(t_data *data);
 
 // map.c
 float	get_player_angle(char dir);
@@ -192,6 +202,10 @@ void	setup_map_from_config(t_data *data);
 void	draw_map_2d(t_data *data);
 int		is_wall(t_data *data, int x, int y);
 void	draw_cell(t_data *data, int x, int y, int color);
+void	render_complete_view(t_data *data);
+void	draw_separator(t_data *data);
+int		key_hook(int keycode, t_data *data);
+int		close_hook(t_data *data);
 
 // parser.c
 int     parse_cub_file(char *filename, t_config *config);
@@ -233,10 +247,14 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle);
 void render_3d_view_textured(t_data *data, t_texture *tex);
 							   
 // window.c
-void	init_mlx(t_data *data);
+int	key_hook(int keycode, t_data *data);
 void	init_textures(t_data *data);
-void	render_complete_view(t_data *data);
+
+// window_utils.c
 void	draw_separator(t_data *data);
-int		key_hook(int keycode, t_data *data);
+void	render_complete_view(t_data *data);
+void	init_mlx(t_data *data);
+void	init_mlx(t_data *data);
+int	close_hook(t_data *data);
 
 #endif
