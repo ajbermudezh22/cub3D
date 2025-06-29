@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 11:04:38 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/27 14:18:52 by albbermu         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:40:53 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static void	init_program(t_data *data)
 
 static void	cleanup_program(t_data *data)
 {
+	if (data->map)
+		free(data->map);
 	free_textures(data->mlx, &data->texture);
 	free_config(&data->config);
 }
@@ -48,6 +50,7 @@ int	main(int argc, char **argv)
 {
 	t_data	img;
 
+	memset(&img, 0, sizeof(t_data));
 	if (argc != 2)
 	{
 		printf("Usage: %s <path_to_map.cub>\n", argv[0]);

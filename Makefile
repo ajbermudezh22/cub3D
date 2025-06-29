@@ -19,11 +19,14 @@ LIBFT     := libft/libft.a
 # Source files (at project root)
 SRC_DIR	  := src
 SRCS_LIST := main.c \
-             parser.c \
+			 draw.c \
+			 map_utils.c \
              map.c \
+			 parser.c \
              render3d.c \
              texture.c \
              raycast.c \
+			 raycast_utils.c \
              window.c
 SRCS      := $(addprefix $(SRC_DIR)/, $(SRCS_LIST))
 
@@ -42,7 +45,7 @@ all: $(NAME)
 
 # Link: build libft first, then link everything
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
+	$(CC) $(OBJS) $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 
 # Build libft if needed
 $(LIBFT):
@@ -53,7 +56,7 @@ $(OBJDIR)/%.o: $(SRC_DIR)/%.c $(HDRS)
 	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Remove just your object tree and libft’s objects
+# Remove just your object tree and libft's objects
 clean:
 	@rm -rf $(OBJDIR)
 	@$(MAKE) clean -C libft

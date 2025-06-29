@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/27 15:27:14 by albbermu         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:07:14 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,28 @@ typedef struct s_texture
 	int     ceiling_color;
 } t_texture;
 
+typedef struct s_line
+{
+	float	start_x;
+	float	start_y;
+	float	end_x;
+	float	end_y;
+	float	dx;
+	float	dy;
+	float	steps;
+	int		thickness;
+	int		color;
+}	t_line;
+
+typedef struct s_ray
+{
+	float	angle;
+	float	distance;
+	int		hit_x;
+	int		hit_y;
+	int		color;
+}	t_ray;
+
 typedef struct s_data
 {
 	void		*mlx;
@@ -94,6 +116,8 @@ typedef struct s_data
 	int			bits_per_pixel;
 	int			line_len;
 	int			endian;
+	int			*map;
+	int			map_s;
 	int			map_width;
 	int			map_height;
 	int			player_x;
@@ -116,6 +140,16 @@ typedef struct s_ray_result
 	int     side;
 } t_ray_result;
 
+// draw.c
+void	draw_direction_line(t_data *data);
+void	draw_thick_line(t_data *data, float end_x, float end_y,
+	int thickness);
+void	draw_player_2d(t_data *data);
+void	draw_rays_2d(t_data *data);
+void	init_ray_params(t_data *data, t_ray *ray, int ray_index);
+void	draw_line_pixels(t_data *data, t_line *line);
+void	init_line_params(t_data *data, t_line *line);
+
 // main.c
 void my_mlx_pixel_put(t_data *data, int x, int y, int color);
 
@@ -123,7 +157,8 @@ void my_mlx_pixel_put(t_data *data, int x, int y, int color);
 float	get_player_angle(char dir);
 void	setup_map_from_config(t_data *data);
 void	draw_map_2d(t_data *data);
-int		is_wall(int x, int y);
+int		is_wall(t_data *data, int x, int y);
+void	draw_cell(t_data *data, int x, int y, int color);
 
 // parser.c
 int     parse_cub_file(char *filename, t_config *config);
@@ -137,6 +172,12 @@ void    find_player_position(t_config *config);
 float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y);
 void	draw_rays_2d(t_data *data);
 void	draw_player_2d(t_data *data);
+void	draw_player_circle(t_data *data);
+void	draw_hit_point(t_data *data, int hit_x, int hit_y);
+void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color);
+float	calculate_distance(t_data *data, float current_x, float current_y);
+int	check_wall_hit(t_data *data, float current_x, float current_y);
+
 
 // render3d.c
 float	cast_ray_3d(t_data *data, float ray_angle);
@@ -155,6 +196,7 @@ void    set_floor_ceiling_colors(t_texture *tex, int floor_r, int floor_g, int f
 int     get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y);
 void    draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_result, 
 							   t_texture *tex, int screen_height, int map_width);
+t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle);
 void render_3d_view_textured(t_data *data, t_texture *tex);
 							   
 // window.c

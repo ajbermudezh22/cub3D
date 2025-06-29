@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:11 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/27 14:03:05 by albbermu         ###   ########.fr       */
+/*   Updated: 2025/06/29 18:03:02 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-// Global variables for map
-int mapX, mapY, mapS = 24;
-int *map = NULL;
 
 float	get_player_angle(char dir)
 {
@@ -31,13 +27,26 @@ float	get_player_angle(char dir)
 
 static void	setup_player_position(t_data *data)
 {
-	data->map_width = mapX;
-	data->map_height = mapY;
-	data->player_x = data->config.player_x * mapS + mapS / 2;
-	data->player_y = data->config.player_y * mapS + mapS / 2;
+	data->player_x = data->config.player_x * data->map_s + data->map_s / 2;
+	data->player_y = data->config.player_y * data->map_s + data->map_s / 2;
 	data->player_angle = get_player_angle(data->config.player_dir);
 	data->player_dx = cos(data->player_angle);
 	data->player_dy = sin(data->player_angle);
+}
+
+static void	init_map_data(t_data *data)
+{
+	data->map_width = data->config.map_width;
+	data->map_height = data->config.map_height;
+	data->map_s = 24;
+	if (data->map)
+		free(data->map);
+	data->map = malloc(data->map_width * data->map_height * sizeof(int));
+	if (!data->map)
+	{
+		printf("Error: Failed to allocate memory for map\n");
+		exit(1);
+	}
 }
 
 void	setup_map_from_config(t_data *data)
@@ -45,47 +54,38 @@ void	setup_map_from_config(t_data *data)
 	int	x;
 	int	y;
 
-	mapX = data->config.map_width;
-	mapY = data->config.map_height;
-	if (map)
-		free(map);
-	map = malloc(mapX * mapY * sizeof(int));
-	if (!map)
-	{
-		printf("Error: Failed to allocate memory for map\n");
-		exit(1);
-	}
+	init_map_data(data);
 	y = -1;
-	while (++y < mapY)
+	while (++y < data->map_height)
 	{
 		x = -1;
-		while (++x < mapX)
+		while (++x < data->map_width)
 		{
 			if (data->config.map_grid[y][x] == '1')
-				map[y * mapX + x] = 1;
+				data->map[y * data->map_width + x] = 1;
 			else
-				map[y * mapX + x] = 0;
+				data->map[y * data->map_width + x] = 0;
 		}
 	}
 	setup_player_position(data);
 }
 
-static void	draw_cell(t_data *data, int x, int y, int color)
+void	draw_cell(t_data *data, int x, int y, int color)
 {
 	int	cell_x;
 	int	cell_y;
 	int	px;
 	int	py;
 
-	px = x * mapS;
-	py = y * mapS;
+	px = x * data->map_s;
+	py = y * data->map_s;
 	if (px >= MAP_WIDTH || py >= HEIGHT)
 		return ;
 	cell_y = py - 1;
-	while (++cell_y < py + mapS && cell_y < HEIGHT)
+	while (++cell_y < py + data->map_s && cell_y < HEIGHT)
 	{
 		cell_x = px - 1;
-		while (++cell_x < px + mapS && cell_x < MAP_WIDTH)
+		while (++cell_x < px + data->map_s && cell_x < MAP_WIDTH)
 		{
 			if (cell_x == px || cell_y == py)
 				my_mlx_pixel_put(data, cell_x, cell_y, 0x666666);
@@ -93,37 +93,4 @@ static void	draw_cell(t_data *data, int x, int y, int color)
 				my_mlx_pixel_put(data, cell_x, cell_y, color);
 		}
 	}
-}
-
-void	draw_map_2d(t_data *data)
-{
-	int	x;
-	int	y;
-	int	color;
-
-	y = -1;
-	while (++y < mapY)
-	{
-		x = -1;
-		while (++x < mapX)
-		{
-			if (map[y * mapX + x] == 1)
-				color = 0xFFFFFF;
-			else
-				color = 0x333333;
-			draw_cell(data, x, y, color);
-		}
-	}
-}
-
-int	is_wall(int x, int y)
-{
-	int	map_x;
-	int	map_y;
-
-	map_x = x / mapS;
-	map_y = y / mapS;
-	if (map_x < 0 || map_x >= mapX || map_y < 0 || map_y >= mapY)
-		return (1);
-	return (map[map_y * mapX + map_x]);
 }

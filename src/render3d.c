@@ -3,17 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   render3d.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:27 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/27 14:03:32 by albbermu         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:36:04 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-extern int mapX, mapY, mapS;
-extern int map[];
 
 // Enhanced DDA raycasting algorithm for smoother, more accurate distance calculation
 float cast_ray_3d(t_data *data, float ray_angle)
@@ -35,8 +32,8 @@ float cast_ray_3d(t_data *data, float ray_angle)
 	float delta_dist_y = fabs(1.0f / dy);
 	
 	// Current map position
-	int map_x = (int)(px / mapS);
-	int map_y = (int)(py / mapS);
+	int map_x = (int)(px / data->map_s);
+	int map_y = (int)(py / data->map_s);
 	
 	// Calculate step and initial side_dist
 	int step_x, step_y;
@@ -44,18 +41,18 @@ float cast_ray_3d(t_data *data, float ray_angle)
 	
 	if (dx < 0) {
 		step_x = -1;
-		side_dist_x = (px / mapS - map_x) * delta_dist_x;
+		side_dist_x = (px / data->map_s - map_x) * delta_dist_x;
 	} else {
 		step_x = 1;
-		side_dist_x = (map_x + 1.0f - px / mapS) * delta_dist_x;
+		side_dist_x = (map_x + 1.0f - px / data->map_s) * delta_dist_x;
 	}
 	
 	if (dy < 0) {
 		step_y = -1;
-		side_dist_y = (py / mapS - map_y) * delta_dist_y;
+		side_dist_y = (py / data->map_s - map_y) * delta_dist_y;
 	} else {
 		step_y = 1;
-		side_dist_y = (map_y + 1.0f - py / mapS) * delta_dist_y;
+		side_dist_y = (map_y + 1.0f - py / data->map_s) * delta_dist_y;
 	}
 	
 	// Perform DDA
@@ -75,8 +72,8 @@ float cast_ray_3d(t_data *data, float ray_angle)
 		}
 		
 		// Check if ray has hit a wall
-		if (map_x < 0 || map_x >= mapX || map_y < 0 || map_y >= mapY || 
-			map[map_y * mapX + map_x] == 1) {
+		if (map_x < 0 || map_x >= data->map_width || map_y < 0 || map_y >= data->map_height || 
+			data->map[map_y * data->map_width + map_x] == 1) {
 			hit = 1;
 		}
 	}
@@ -84,13 +81,13 @@ float cast_ray_3d(t_data *data, float ray_angle)
 	// Calculate distance
 	float perp_wall_dist;
 	if (side == 0) {
-		perp_wall_dist = (map_x - px / mapS + (1 - step_x) / 2) / dx;
+		perp_wall_dist = (map_x - px / data->map_s + (1 - step_x) / 2) / dx;
 	} else {
-		perp_wall_dist = (map_y - py / mapS + (1 - step_y) / 2) / dy;
+		perp_wall_dist = (map_y - py / data->map_s + (1 - step_y) / 2) / dy;
 	}
 	
 	// Convert to pixel distance and apply fisheye correction
-	float distance = perp_wall_dist * mapS;
+	float distance = perp_wall_dist * data->map_s;
 	float angle_diff = ray_angle - data->player_angle;
 	distance = distance * cos(angle_diff);
 	
@@ -104,7 +101,7 @@ void draw_wall_slice(t_data *data, int x, float distance, int wall_color)
 	if (distance <= 0) distance = 1; // Prevent division by zero
 	
 	// Use float precision for smoother calculations
-	float wall_height_f = (WALL_HEIGHT * mapS) / distance;
+	float wall_height_f = (WALL_HEIGHT * data->map_s) / distance;
 	float wall_start_f = (HEIGHT / 2.0f) - (wall_height_f / 2.0f);
 	float wall_end_f = (HEIGHT / 2.0f) + (wall_height_f / 2.0f);
 	

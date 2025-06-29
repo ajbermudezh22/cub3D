@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   texture.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albbermu <albbermu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:34 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/27 15:38:52 by albbermu         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:36:39 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,6 @@ int get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y)
 t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
 {
     t_ray_result result;
-    extern int mapX, mapY, mapS;
-    extern int map[];
     
     // Normalize angle
     while (ray_angle < 0) ray_angle += 2 * M_PI;
@@ -136,26 +134,26 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     float delta_dist_y = fabs(1.0f / dy);
     
     // Current map position
-    int map_x = (int)(px / mapS);
-    int map_y = (int)(py / mapS);
+    int map_x = (int)(px / data->map_s);
+    int map_y = (int)(py / data->map_s);
     
     // Calculate step and initial side_dist
     float side_dist_x, side_dist_y;
     
     if (dx < 0) {
         result.step_x = -1;
-        side_dist_x = (px / mapS - map_x) * delta_dist_x;
+        side_dist_x = (px / data->map_s - map_x) * delta_dist_x;
     } else {
         result.step_x = 1;
-        side_dist_x = (map_x + 1.0f - px / mapS) * delta_dist_x;
+        side_dist_x = (map_x + 1.0f - px / data->map_s) * delta_dist_x;
     }
     
     if (dy < 0) {
         result.step_y = -1;
-        side_dist_y = (py / mapS - map_y) * delta_dist_y;
+        side_dist_y = (py / data->map_s - map_y) * delta_dist_y;
     } else {
         result.step_y = 1;
-        side_dist_y = (map_y + 1.0f - py / mapS) * delta_dist_y;
+        side_dist_y = (map_y + 1.0f - py / data->map_s) * delta_dist_y;
     }
     
     // Perform DDA
@@ -174,8 +172,8 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
         }
         
         // Check if ray has hit a wall
-        if (map_x < 0 || map_x >= mapX || map_y < 0 || map_y >= mapY || 
-            map[map_y * mapX + map_x] == 1) {
+        if (map_x < 0 || map_x >= data->map_width || map_y < 0 || map_y >= data->map_height || 
+            data->map[map_y * data->map_width + map_x] == 1) {
             hit = 1;
         }
     }
@@ -183,11 +181,11 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     // Calculate distance
     float perp_wall_dist;
     if (result.side == 0) {
-        perp_wall_dist = (map_x - px / mapS + (1 - result.step_x) / 2) / dx;
-        result.wall_x = py / mapS + perp_wall_dist * dy;
+        perp_wall_dist = (map_x - px / data->map_s + (1 - result.step_x) / 2) / dx;
+        result.wall_x = py / data->map_s + perp_wall_dist * dy;
     } else {
-        perp_wall_dist = (map_y - py / mapS + (1 - result.step_y) / 2) / dy;
-        result.wall_x = px / mapS + perp_wall_dist * dx;
+        perp_wall_dist = (map_y - py / data->map_s + (1 - result.step_y) / 2) / dy;
+        result.wall_x = px / data->map_s + perp_wall_dist * dx;
     }
     result.wall_x -= floor(result.wall_x);
     
@@ -205,9 +203,7 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
     }
     
     // Convert to pixel distance and apply fisheye correction
-    result.distance = perp_wall_dist * mapS;
-    // float angle_diff = ray_angle - data->player_angle;
-    // result.distance = result.distance * cos(angle_diff);
+    result.distance = perp_wall_dist * data->map_s;
     
     return result;
 }
@@ -216,12 +212,10 @@ t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle)
 void draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_result, 
                              t_texture *tex, int screen_height, int map_width)
 {
-    if (ray_result.distance <= 0) ray_result.distance = 1; // Prevent division by zero
-    
-    extern int mapS;
+    if (ray_result.distance <= 0) ray_result.distance = 1;
     
     // Calculate wall height
-    float wall_height_f = (WALL_HEIGHT * mapS) / ray_result.distance;
+    float wall_height_f = (WALL_HEIGHT * data->map_s) / ray_result.distance;
     int wall_start = (screen_height / 2) - (wall_height_f / 2);
     int wall_end = (screen_height / 2) + (wall_height_f / 2);
     
@@ -248,16 +242,14 @@ void draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_resul
         int color = get_texture_pixel(tex, ray_result.wall_side, tex_x, tex_y);
         
         // Apply distance shading
-        float shade = 1.0f - (ray_result.distance / 400.0f);
-        if (shade < 0.1f) shade = 0.1f;
-        if (shade > 1.0f) shade = 1.0f;
+        float shade_factor = 1.0f - (ray_result.distance / (data->map_width * data->map_s * 0.5f));
+        if (shade_factor < 0.1f) shade_factor = 0.1f;
         
-        int r = ((color >> 16) & 0xFF) * shade;
-        int g = ((color >> 8) & 0xFF) * shade;
-        int b = (color & 0xFF) * shade;
+        int r = ((color >> 16) & 0xFF) * shade_factor;
+        int g = ((color >> 8) & 0xFF) * shade_factor;
+        int b = (color & 0xFF) * shade_factor;
         
-        int final_color = (r << 16) | (g << 8) | b;
-        my_mlx_pixel_put(data, map_width + screen_x, y, final_color);
+        my_mlx_pixel_put(data, map_width + screen_x, y, (r << 16) | (g << 8) | b);
     }
     
     // Draw floor
@@ -266,20 +258,15 @@ void draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_resul
     }
 }
 
-// Main 3D rendering function with textures
 void render_3d_view_textured(t_data *data, t_texture *tex)
 {
-    float fov = FOV * (M_PI / 180.0f); // Convert FOV to radians
-    float start_angle = data->player_angle - (fov / 2);
-    
-    for (int x = 0; x < VIEW_WIDTH; x++) {
-        // Calculate ray angle for this screen column
-        float ray_angle = start_angle + (fov * x / VIEW_WIDTH);
-        
-        // Cast ray and get result with texture info
-        t_ray_result ray_result = cast_ray_with_texture_info(data, ray_angle);
-        
-        // Draw textured wall slice
-        draw_textured_wall_slice(data, x, ray_result, tex, HEIGHT, MAP_WIDTH);
-    }
+	float fov = FOV * DR;
+	float start_angle = data->player_angle - (fov / 2);
+	
+	for (int x = 0; x < VIEW_WIDTH; x++)
+	{
+		float ray_angle = start_angle + (fov * x / VIEW_WIDTH);
+		t_ray_result ray_result = cast_ray_with_texture_info(data, ray_angle);
+		draw_textured_wall_slice(data, x, ray_result, tex, HEIGHT, MAP_WIDTH);
+	}
 }
