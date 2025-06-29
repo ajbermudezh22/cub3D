@@ -43,6 +43,8 @@ static void	print_controls(void)
 	printf("Controls:\n");
 	printf("W/S - Move forward/backward\n");
 	printf("A/D - Turn left/right\n");
+	printf("Arrow Keys - Turn left/right\n");
+	printf("ESC - Exit program\n");
 	printf("SPACE - Switch view modes\n");
 }
 
@@ -67,6 +69,7 @@ int	main(int argc, char **argv)
 	render_complete_view(&img);
 	print_controls();
 	mlx_hook(img.win, 2, 1L << 0, key_hook, &img);
+	mlx_hook(img.win, 17, 1L << 17, close_window, &img);
 	mlx_loop(img.mlx);
 	cleanup_program(&img);
 	return (0);

@@ -92,7 +92,7 @@ static void	handle_movement(int keycode, t_data *data,
 	move_speed = 5;
 	if (keycode == 'w' || keycode == 'W')
 	{
-		*new_x += data->player_dx * move_speed;
+	//	*new_x += data->player_dx * move_speed;
 		*new_y += data->player_dy * move_speed;
 	}
 	if (keycode == 's' || keycode == 'S')
@@ -102,13 +102,13 @@ static void	handle_movement(int keycode, t_data *data,
 	}
 	if (keycode == 'a' || keycode == 'A')
 	{
-		*new_x -= data->player_dy *  move_speed;
-		*new_y += data->player_dx *  move_speed;
+		*new_x += data->player_dy * move_speed;
+		*new_y -= data->player_dx * move_speed;
 	}
 	if (keycode == 'd' || keycode == 'D')
 	{
-		*new_x += data->player_dy * move_speed;
-		*new_y -= data->player_dx * move_speed;
+		*new_x -= data->player_dy * move_speed;
+		*new_y += data->player_dx * move_speed;
 	}
 }
 
@@ -117,10 +117,11 @@ static void	handle_rotation(int keycode, float *new_angle)
 	float	rotation_speed;
 
 	rotation_speed = 0.1;
+
 	if (keycode == KEY_LEFT)
-		*new_angle -= rotation_speed;
-	if (keycode == KEY_RIGHT)
 		*new_angle += rotation_speed;
+	if (keycode == KEY_RIGHT)
+		*new_angle -= rotation_speed;
 }
 
 // int	key_hook(int keycode, t_data *data)
@@ -154,18 +155,31 @@ static void	handle_rotation(int keycode, float *new_angle)
 // 	return (0);
 // }
 
-// ...existing code...
+int	close_window(t_data *data)
+{
+	free_textures(data->mlx, &data->texture);
+	free_config(&data->config);
+	if (data->map.grid)
+		free(data->map.grid);
+	mlx_destroy_image(data->mlx, data->img);
+	mlx_destroy_window(data->mlx, data->win);
+	mlx_destroy_display(data->mlx);
+	free(data->mlx);
+	exit(0);
+	return (0);
+}
+
 int	key_hook(int keycode, t_data *data)
 {
     float	new_x;
     float	new_y;
     float	new_angle;
-    // float	old_x;
     float	old_y;
 
+    if (keycode == KEY_ESC)
+        close_window(data);
     new_x = data->player_x;
     new_y = data->player_y;
-    // old_x = data->player_x;
     old_y = data->player_y;
     new_angle = data->player_angle;
     handle_movement(keycode, data, &new_x, &new_y);

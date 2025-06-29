@@ -173,5 +173,6 @@ void	init_textures(t_data *data);
 void	render_complete_view(t_data *data);
 void	draw_separator(t_data *data);
 int		key_hook(int keycode, t_data *data);
+int		close_window(t_data *data);
 
 #endif
