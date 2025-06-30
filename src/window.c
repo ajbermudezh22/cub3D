@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:39 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/30 08:12:31 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/30 18:05:03 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,10 @@ int	key_hook(int keycode, t_data *data)
 	float	new_angle;
 
 	if (keycode == KEY_ESC)
-		close_hook(data);
+	{
+		mlx_loop_end(data->mlx);
+		return (0);
+	}
 	new_x = data->player_x;
 	new_y = data->player_y;
 	new_angle = data->player_angle;
@@ -90,6 +93,9 @@ int	key_hook(int keycode, t_data *data)
 	handle_rotation(keycode, &new_angle);
 	if (keycode == ' ')
 		data->view_mode = (data->view_mode + 1) % 3;
-	update_player_state(data, new_x, new_y, new_angle);
+	if (new_x != data->player_x || new_y != data->player_y || new_angle != data->player_angle)
+	{
+		update_player_state(data, new_x, new_y, new_angle);
+	}
 	return (0);
 }

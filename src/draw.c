@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:51:02 by albermud          #+#    #+#             */
-/*   Updated: 2025/06/29 18:31:28 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/30 18:16:47 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	cast_and_draw_ray(t_data *data, t_ray_params *p, int i)
 	p->distance = cast_ray_2d(data, p->ray_angle, &p->hit_x, &p->hit_y);
 	(void)p->distance;
 	if (i == p->num_rays / 2)
-		p->color = 0x00FF00;
+		p->color = 0xFF00FF;
 	else
-		p->color = 0x004400;
+		p->color = 0xFFFF00;
 	draw_ray_line(data, p->hit_x, p->hit_y, p->color);
 	draw_hit_point(data, p->hit_x, p->hit_y);
 }
