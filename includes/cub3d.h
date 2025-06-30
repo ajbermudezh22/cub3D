@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 20:07:37 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/30 07:59:39 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,39 +51,39 @@
 
 typedef struct s_config
 {
-	char    *north_texture_path;
-	char    *south_texture_path;
-	char    *west_texture_path;
-	char    *east_texture_path;
-	int     floor_r;
-	int     floor_g;
-	int     floor_b;
-	int     ceiling_r;
-	int     ceiling_g;
-	int     ceiling_b;
-	char    **map_grid;
-	int     map_width;
-	int     map_height;
-	int     player_x;
-	int     player_y;
-	char    player_dir;
-} t_config;
+	char	*north_texture_path;
+	char	*south_texture_path;
+	char	*west_texture_path;
+	char	*east_texture_path;
+	int		floor_r;
+	int		floor_g;
+	int		floor_b;
+	int		ceiling_r;
+	int		ceiling_g;
+	int		ceiling_b;
+	char	**map_grid;
+	int		map_width;
+	int		map_height;
+	int		player_x;
+	int		player_y;
+	char	player_dir;
+}	t_config;
 
 typedef struct s_texture
 {
-	void    *north_texture;
-	void    *south_texture; 
-	void    *west_texture;
-	void    *east_texture;
-	int     tex_width;
-	int     tex_height;
-	int     *north_addr;
-	int     *south_addr;
-	int     *west_addr;
-	int     *east_addr;
-	int     floor_color;
-	int     ceiling_color;
-} t_texture;
+	void	*north_texture;
+	void	*south_texture;
+	void	*west_texture;
+	void	*east_texture;
+	int		tex_width;
+	int		tex_height;
+	int		*north_addr;
+	int		*south_addr;
+	int		*west_addr;
+	int		*east_addr;
+	int		floor_color;
+	int		ceiling_color;
+}	t_texture;
 
 typedef struct s_line
 {
@@ -101,11 +101,33 @@ typedef struct s_line
 typedef struct s_ray
 {
 	float	angle;
-	float	distance;
-	int		hit_x;
-	int		hit_y;
-	int		color;
+	float	px;
+	float	py;
+	float	dx;
+	float	dy;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	float	side_dist_x;
+	float	side_dist_y;
+	int		side;
+	float	perp_wall_dist;
 }	t_ray;
+
+typedef struct s_wall
+{
+	int		x;
+	float	distance;
+	float	wall_height_f;
+	float	wall_start_f;
+	float	wall_end_f;
+	int		wall_start;
+	int		wall_end;
+	float	shade_factor;
+}	t_wall;
 
 typedef struct s_thick_line_params
 {
@@ -165,17 +187,20 @@ typedef struct s_data
 	int			view_mode;
 	t_texture	texture;
 	t_config	config;
-} t_data;
+}	t_data;
 
 typedef struct s_ray_result
 {
-	float   distance;
-	int     wall_side;
-	float   wall_x;
-	int     step_x;
-	int     step_y;
-	int     side;
-} t_ray_result;
+	float	distance;
+	int		wall_side;
+	float	wall_x;
+	int		step_x;
+	int		step_y;
+	int		side;
+}	t_ray_result;
+
+// antialiasing.c
+void	draw_antialiased_edges(t_data *data, t_wall *wall);
 
 // draw.c
 void	cast_and_draw_ray(t_data *data, t_ray_params *p, int i);
@@ -185,12 +210,7 @@ void	draw_player_2d(t_data *data);
 // draw_utils.c
 void	draw_direction_line(t_data *data);
 void	draw_thick_line(t_data *data, t_draw_line_params *line_params);
-
 void	draw_player_circle(t_data *data);
-
-// draw_utils.c
-void	draw_direction_line(t_data *data);
-
 
 // main.c
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
@@ -207,24 +227,34 @@ void	draw_separator(t_data *data);
 int		key_hook(int keycode, t_data *data);
 int		close_hook(t_data *data);
 
+// parser_config.c
+int	check_config_complete(t_config *config);
+void	init_config(t_config *config);
+
 // parser.c
-int     parse_cub_file(char *filename, t_config *config);
-void    free_config(t_config *config);
-int     parse_color(char *line, int *r, int *g, int *b);
+int		parse_cub_file(char *filename, t_config *config);
+void	free_config(t_config *config);
+int		parse_color(char *line, int *r, int *g, int *b);
 int		parse_texture_path(char *line, char **path, char *cub_file_dir);
-int     validate_map(t_config *config);
-void    find_player_position(t_config *config);
+int		validate_map(t_config *config);
+void	find_player_position(t_config *config);
+
+// parser_utils.c
+int	process_line(char *line, t_config *config, char *cub_file_dir,
+	int *map_started);
+
+// parser_map.c
+int	read_map(char *line, t_config *config, char ***temp_map, int *map_lines);
+void	copy_and_pad_map(t_config *config, char **temp_map, int map_lines);
+
 
 // raycaster.c
 float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y);
-void	draw_rays_2d(t_data *data);
-void	draw_player_2d(t_data *data);
 void	draw_player_circle(t_data *data);
 void	draw_hit_point(t_data *data, int hit_x, int hit_y);
 void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color);
 float	calculate_distance(t_data *data, float current_x, float current_y);
-int	check_wall_hit(t_data *data, float current_x, float current_y);
-
+int		check_wall_hit(t_data *data, float current_x, float current_y);
 
 // render3d.c
 float	cast_ray_3d(t_data *data, float ray_angle);
@@ -234,27 +264,37 @@ void	render_3d_view(t_data *data);
 void	clear_3d_view(t_data *data);
 void	clear_2d_view(t_data *data);
 
-// texture.c
-int     load_textures(void *mlx, t_texture *tex, char *north_path, char *south_path, 
-					 char *west_path, char *east_path);
-void    free_textures(void *mlx, t_texture *tex);
-void    set_floor_ceiling_colors(t_texture *tex, int floor_r, int floor_g, int floor_b,
-								int ceiling_r, int ceiling_g, int ceiling_b);
-int     get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y);
-void    draw_textured_wall_slice(t_data *data, int screen_x, t_ray_result ray_result, 
-							   t_texture *tex, int screen_height, int map_width);
-t_ray_result cast_ray_with_texture_info(t_data *data, float ray_angle);
-void render_3d_view_textured(t_data *data, t_texture *tex);
-							   
-// window.c
-int	key_hook(int keycode, t_data *data);
-void	init_textures(t_data *data);
+// Raycasting functions
+void	init_ray(t_data *data, t_ray *ray, float ray_angle);
+void	perform_dda(t_data *data, t_ray *ray);
 
-// window_utils.c
-void	draw_separator(t_data *data);
-void	render_complete_view(t_data *data);
+// Wall rendering functions
+void	init_wall(t_data *data, t_wall *wall, int x, float distance);
+void	draw_ceiling(t_data *data, t_wall *wall);
+void	draw_floor(t_data *data, t_wall *wall);
+void	draw_textured_wall(t_data *data, t_wall *wall);
+void	draw_antialiased_edges(t_data *data, t_wall *wall);
+
+// texture.c
+int		load_textures(void *mlx, t_texture *tex, char *north_path,
+			char *south_path, char *west_path, char *east_path);
+void	free_textures(void *mlx, t_texture *tex);
+void	set_floor_ceiling_colors(t_texture *tex, int floor_r, int floor_g,
+			int floor_b, int ceiling_r, int ceiling_g, int ceiling_b);
+int		get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y);
+void	draw_textured_wall_slice(t_data *data, int screen_x,
+			t_ray_result ray_result, t_texture *tex, int screen_height,
+			int map_width);
+t_ray_result	cast_ray_with_texture_info(t_data *data, float ray_angle);
+void	render_3d_view_textured(t_data *data, t_texture *tex);
+
+// wall_render.c
+void	draw_ceiling(t_data *data, t_wall *wall);
+void	draw_floor(t_data *data, t_wall *wall);
+void	draw_textured_wall(t_data *data, t_wall *wall);
+
+// window.c
+void	init_textures(t_data *data);
 void	init_mlx(t_data *data);
-void	init_mlx(t_data *data);
-int	close_hook(t_data *data);
 
 #endif

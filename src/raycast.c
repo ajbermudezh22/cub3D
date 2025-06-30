@@ -5,84 +5,102 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/27 13:21:23 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 20:07:37 by albermud         ###   ########.fr       */
+/*   Created: 2025/06/30 08:05:00 by albermud          #+#    #+#             */
+/*   Updated: 2025/06/30 08:08:17 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-float	cast_ray_2d(t_data *data, float ray_angle, int *hit_x, int *hit_y)
+static void	init_ray_step_sidedist(t_data *data, t_ray *ray)
 {
-	float	dx;
-	float	dy;
-	float	current_x;
-	float	current_y;
-	float	step_size;
+	float	px_map;
+	float	py_map;
 
-	dx = cos(ray_angle);
-	dy = sin(ray_angle);
-	current_x = data->player_x;
-	current_y = data->player_y;
-	step_size = 0.5;
-	while (1)
+	px_map = ray->px / data->map_s;
+	py_map = ray->py / data->map_s;
+	if (ray->dx < 0)
 	{
-		current_x += dx * step_size;
-		current_y += dy * step_size;
-		if (current_x < 0 || current_x >= MAP_WIDTH
-			|| current_y < 0 || current_y >= HEIGHT)
-			break ;
-		if (check_wall_hit(data, current_x, current_y))
-			return (calculate_distance(data, current_x, current_y));
+		ray->step_x = -1;
+		ray->side_dist_x = (px_map - ray->map_x) * ray->delta_dist_x;
 	}
-	*hit_x = (int)current_x;
-	*hit_y = (int)current_y;
-	return (calculate_distance(data, current_x, current_y));
+	else
+	{
+		ray->step_x = 1;
+		ray->side_dist_x = (ray->map_x + 1.0f - px_map) * ray->delta_dist_x;
+	}
+	if (ray->dy < 0)
+	{
+		ray->step_y = -1;
+		ray->side_dist_y = (py_map - ray->map_y) * ray->delta_dist_y;
+	}
+	else
+	{
+		ray->step_y = 1;
+		ray->side_dist_y = (ray->map_y + 1.0f - py_map) * ray->delta_dist_y;
+	}
 }
 
-int	check_wall_hit(t_data *data, float current_x, float current_y)
+void	init_ray(t_data *data, t_ray *ray, float ray_angle)
 {
-	int	map_x;
-	int	map_y;
-
-	map_x = (int)current_x / TILE_SIZE;
-	map_y = (int)current_y / TILE_SIZE;
-	if (map_x >= 0 && map_x < data->config.map_width
-		&& map_y >= 0 && map_y < data->config.map_height)
-	{
-		if (data->config.map_grid[map_y][map_x] == '1')
-			return (1);
-	}
-	return (0);
+	ray->angle = ray_angle;
+	while (ray->angle < 0)
+		ray->angle += 2 * PI;
+	while (ray->angle >= 2 * PI)
+		ray->angle -= 2 * PI;
+	ray->px = (float)data->player_x;
+	ray->py = (float)data->player_y;
+	ray->dx = cosf(ray->angle);
+	ray->dy = sinf(ray->angle);
+	ray->delta_dist_x = fabsf(1.0f / ray->dx);
+	ray->delta_dist_y = fabsf(1.0f / ray->dy);
+	ray->map_x = (int)(ray->px / data->map_s);
+	ray->map_y = (int)(ray->py / data->map_s);
+	init_ray_step_sidedist(data, ray);
 }
 
-float	calculate_distance(t_data *data, float current_x, float current_y)
+void	perform_dda(t_data *data, t_ray *ray)
 {
-	return (sqrt(pow(current_x - data->player_x, 2)
-			+ pow(current_y - data->player_y, 2)));
+	int	hit;
+
+	hit = 0;
+	while (hit == 0)
+	{
+		if (ray->side_dist_x < ray->side_dist_y)
+		{
+			ray->side_dist_x += ray->delta_dist_x;
+			ray->map_x += ray->step_x;
+			ray->side = 0;
+		}
+		else
+		{
+			ray->side_dist_y += ray->delta_dist_y;
+			ray->map_y += ray->step_y;
+			ray->side = 1;
+		}
+		if (ray->map_x < 0 || ray->map_x >= data->map_width
+			|| ray->map_y < 0 || ray->map_y >= data->map_height
+			|| data->map[ray->map_y * data->map_width + ray->map_x] == 1)
+			hit = 1;
+	}
 }
 
-void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color)
+float	cast_ray_3d(t_data *data, float ray_angle)
 {
-	t_draw_ray_line_params	line;
-	int						step;
+	t_ray	ray;
+	float	distance;
+	float	angle_diff;
 
-	if (hit_x >= MAP_WIDTH)
-		return ;
-	line.dx = hit_x - data->player_x;
-	line.dy = hit_y - data->player_y;
-	line.steps = fmax(fabs(line.dx), fabs(line.dy));
-	if (line.steps <= 0)
-		return ;
-	line.dx /= line.steps;
-	line.dy /= line.steps;
-	line.x = data->player_x;
-	line.y = data->player_y;
-	step = -1;
-	while (++step < (int)line.steps && line.x < MAP_WIDTH)
-	{
-		my_mlx_pixel_put(data, (int)line.x, (int)line.y, color);
-		line.x += line.dx;
-		line.y += line.dy;
-	}
+	init_ray(data, &ray, ray_angle);
+	perform_dda(data, &ray);
+	if (ray.side == 0)
+		ray.perp_wall_dist = (ray.map_x - ray.px / data->map_s
+				+ (1 - ray.step_x) / 2) / ray.dx;
+	else
+		ray.perp_wall_dist = (ray.map_y - ray.py / data->map_s
+				+ (1 - ray.step_y) / 2) / ray.dy;
+	distance = ray.perp_wall_dist * data->map_s;
+	angle_diff = ray.angle - data->player_angle;
+	distance = distance * cosf(angle_diff);
+	return (distance);
 }

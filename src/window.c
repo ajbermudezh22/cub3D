@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:39 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/29 19:00:40 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/30 08:12:31 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ static void	handle_movement(int keycode, t_data *data,
 	}
 	if (keycode == 'a' || keycode == 'A')
 	{
-		*new_x -= data->player_dy * move_speed;
-		*new_y += data->player_dx * move_speed;
+		*new_x += data->player_dy * move_speed;
+		*new_y -= data->player_dx * move_speed;
 	}
 	if (keycode == 'd' || keycode == 'D')
 	{
-		*new_x += data->player_dy * move_speed;
-		*new_y -= data->player_dx * move_speed;
+		*new_x -= data->player_dy * move_speed;
+		*new_y += data->player_dx * move_speed;
 	}
 }
 

@@ -12,7 +12,7 @@ SRC: 	main.c render3d.c raycast.c
 # Alberto
 - norminette & forbidden functions & check whether it follows the subject's requirement:
 	-main - Done
-	-parser 
+	-parser - Done
 	-window - Done
 	-texture
 + check any logic error

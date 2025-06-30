@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 23:39:21 by fvargas           #+#    #+#             */
-/*   Updated: 2025/04/09 11:37:24 by albermud         ###   ########.fr       */
+/*   Updated: 2025/06/30 07:08:01 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ char	*ft_strnstr(const char *haystack, const char *neddle, size_t len);
 long	ft_atoi(const char *nptr);
 void	*ft_calloc(size_t nmemb, size_t size);
 char	*ft_strdup(const char *s);
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 
 // Secondary Functions
 char	*ft_substr(const char *s, unsigned int start, size_t len);
@@ -61,6 +62,8 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
+char	*ft_strcpy(char *s1, char *s2);
+void	ft_free_split(char **split);
 
 char	*get_next_line(int fd);
 

@@ -19,15 +19,22 @@ LIBFT     := libft/libft.a
 # Source files (at project root)
 SRC_DIR	  := src
 SRCS_LIST := main.c \
+			 antialiasing.c \
 			 draw.c \
 			 draw_utils.c \
 			 map_utils.c \
              map.c \
 			 parser.c \
-             render3d.c \
-             texture.c \
+			 parser_config.c \
+			 parser_map.c \
+			 parser_utils.c \
              raycast.c \
 			 raycast_utils.c \
+			 raycast_utils2.c \
+			 render3d.c \
+			 texture.c \
+			 view.c \
+			 wall_render.c \
              window.c \
 			 window_utils.c
 SRCS      := $(addprefix $(SRC_DIR)/, $(SRCS_LIST))
