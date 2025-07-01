@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/06/30 07:59:39 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:48:03 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 # define FOV 60              // Field of view in degrees
 # define NUM_RAYS 500        // Number of rays for 3D rendering
 # define WALL_HEIGHT 200     // Wall height in 3D view
+# define VIEW_DISTANCE 400   // Shading distance
 
 typedef struct s_config
 {
@@ -69,6 +70,14 @@ typedef struct s_config
 	char	player_dir;
 }	t_config;
 
+typedef struct s_texture_details
+{
+	char	*name;
+	char	*path;
+	void	**texture;
+	int		**addr;
+}	t_texture_details;
+
 typedef struct s_texture
 {
 	void	*north_texture;
@@ -85,6 +94,15 @@ typedef struct s_texture
 	int		ceiling_color;
 }	t_texture;
 
+typedef struct s_wall_params
+{
+	int		screen_x;
+	float	wall_height;
+	int		wall_start;
+	int		wall_end;
+	int		tex_x;
+}	t_wall_params;
+
 typedef struct s_line
 {
 	float	start_x;
@@ -97,6 +115,22 @@ typedef struct s_line
 	int		thickness;
 	int		color;
 }	t_line;
+
+typedef struct s_ray_cast
+{
+	float	dx;
+	float	dy;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	float	side_dist_x;
+	float	side_dist_y;
+	int		side;
+	int		wall_side;
+}	t_ray_cast;
 
 typedef struct s_ray
 {
@@ -276,17 +310,15 @@ void	draw_textured_wall(t_data *data, t_wall *wall);
 void	draw_antialiased_edges(t_data *data, t_wall *wall);
 
 // texture.c
-int		load_textures(void *mlx, t_texture *tex, char *north_path,
-			char *south_path, char *west_path, char *east_path);
-void	free_textures(void *mlx, t_texture *tex);
-void	set_floor_ceiling_colors(t_texture *tex, int floor_r, int floor_g,
-			int floor_b, int ceiling_r, int ceiling_g, int ceiling_b);
-int		get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y);
-void	draw_textured_wall_slice(t_data *data, int screen_x,
-			t_ray_result ray_result, t_texture *tex, int screen_height,
-			int map_width);
+int				load_textures(t_data *data);
+void			set_floor_ceiling_colors(t_texture *tex, t_config *config);
+void			free_textures(void *mlx, t_texture *tex);
+int				get_texture_pixel(t_texture *tex, int wall_side, int tex_x,
+					int tex_y);
+void			draw_textured_wall_slice(t_data *data, int screen_x,
+					t_ray_result ray_result, t_texture *tex);
 t_ray_result	cast_ray_with_texture_info(t_data *data, float ray_angle);
-void	render_3d_view_textured(t_data *data, t_texture *tex);
+void			render_3d_view_textured(t_data *data, t_texture *tex);
 
 // wall_render.c
 void	draw_ceiling(t_data *data, t_wall *wall);

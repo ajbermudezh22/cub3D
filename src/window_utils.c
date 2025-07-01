@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 18:54:54 by albermud          #+#    #+#             */
-/*   Updated: 2025/06/30 18:18:51 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/01 17:04:08 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,12 @@ void	init_textures(t_data *data)
 	data->player_dx = cos(data->player_angle);
 	data->player_dy = sin(data->player_angle);
 	data->view_mode = 1;
-	if (!load_textures(data->mlx, &data->texture,
-			data->config.north_texture_path,
-			data->config.south_texture_path,
-			data->config.west_texture_path,
-			data->config.east_texture_path))
+	if (!load_textures(data))
 	{
 		printf("Error: Could not initialize textures\n");
 		exit(1);
 	}
-	set_floor_ceiling_colors(&data->texture,
-		data->config.floor_r, data->config.floor_g, data->config.floor_b,
-		data->config.ceiling_r, data->config.ceiling_g, data->config.ceiling_b);
+	set_floor_ceiling_colors(&data->texture, &data->config);
 }
 
 void	render_complete_view(t_data *data)

@@ -33,6 +33,8 @@ SRCS_LIST := main.c \
 			 raycast_utils2.c \
 			 render3d.c \
 			 texture.c \
+			 texture_load.c \
+			 texture_utils.c \
 			 view.c \
 			 wall_render.c \
              window.c \
