@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/01 17:48:03 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:27:40 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,68 @@
 # define NUM_RAYS 500        // Number of rays for 3D rendering
 # define WALL_HEIGHT 200     // Wall height in 3D view
 # define VIEW_DISTANCE 400   // Shading distance
+
+typedef struct s_texture_raycast_vars
+{
+	float	px;
+	float	py;
+	float	dx;
+	float	dy;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	int		map_x;
+	int		map_y;
+	float	side_dist_x;
+	float	side_dist_y;
+	int		hit;
+	float	perp_wall_dist;
+}	t_texture_raycast_vars;
+
+typedef struct s_texture_wall_vars
+{
+	float	wall_height_f;
+	int		wall_start;
+	int		wall_end;
+	int		tex_x;
+	int		y;
+	int		tex_y;
+	int		color;
+	float	shade_factor;
+	int		r;
+	int		g;
+	int		b;
+}	t_texture_wall_vars;
+
+typedef struct s_raycast_vars
+{
+	float	px;
+	float	py;
+	float	dx;
+	float	dy;
+	float	delta_dist_x;
+	float	delta_dist_y;
+	int		map_x;
+	int		map_y;
+	float	side_dist_x;
+	float	side_dist_y;
+	int		hit;
+	float	perp_wall_dist;
+}	t_raycast_vars;
+
+typedef struct s_wall_render_vars
+{
+	float	wall_height_f;
+	int		wall_start;
+	int		wall_end;
+	int		tex_x;
+	int		y;
+	int		tex_y;
+	int		color;
+	float	shade_factor;
+	int		r;
+	int		g;
+	int		b;
+}	t_wall_render_vars;
 
 typedef struct s_config
 {
@@ -233,6 +295,14 @@ typedef struct s_ray_result
 	int		side;
 }	t_ray_result;
 
+typedef struct s_wall_pixel_params
+{
+	t_data			*data;
+	int				screen_x;
+	t_ray_result	ray_result;
+	t_texture		*tex;
+}	t_wall_pixel_params;
+
 // antialiasing.c
 void	draw_antialiased_edges(t_data *data, t_wall *wall);
 
@@ -319,6 +389,27 @@ void			draw_textured_wall_slice(t_data *data, int screen_x,
 					t_ray_result ray_result, t_texture *tex);
 t_ray_result	cast_ray_with_texture_info(t_data *data, float ray_angle);
 void			render_3d_view_textured(t_data *data, t_texture *tex);
+
+// texture_raycast.c
+void			normalize_ray_angle(float *ray_angle);
+void			init_texture_raycast(t_data *data, t_texture_raycast_vars *vars,
+					float ray_angle);
+void			setup_texture_step_dist(t_texture_raycast_vars *vars,
+					t_ray_result *result, t_data *data);
+void			execute_texture_dda(t_texture_raycast_vars *vars,
+					t_ray_result *result, t_data *data);
+void			calculate_texture_wall_distance(t_texture_raycast_vars *vars,
+					t_ray_result *result, t_data *data);
+
+// texture_render.c
+void			init_texture_wall_vars(t_texture_wall_vars *vars,
+					t_ray_result ray_result, t_data *data, t_texture *tex);
+void			render_texture_ceiling(t_texture_wall_vars *vars, t_data *data,
+					int screen_x, t_texture *tex);
+void			render_texture_floor(t_texture_wall_vars *vars, t_data *data,
+					int screen_x, t_texture *tex);
+void			render_texture_wall_pixels(t_texture_wall_vars *vars,
+					t_wall_pixel_params *params);
 
 // wall_render.c
 void	draw_ceiling(t_data *data, t_wall *wall);

@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 18:54:54 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/01 17:04:08 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:40:45 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ void	render_complete_view(t_data *data)
 	clear_2d_view(data);
 	clear_3d_view(data);
 	draw_map_2d(data);
-	// draw_rays_2d(data);
 	draw_player_2d(data);
 	draw_separator(data);
 	render_3d_view_textured(data, &data->texture);
