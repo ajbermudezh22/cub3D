@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 18:30:44 by albermud          #+#    #+#             */
-/*   Updated: 2025/06/29 18:35:55 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:54:45 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	draw_direction_line(t_data *data)
 {
 	int					line_length;
-	t_draw_line_params	line_params;
+	t_line_params	line_params;
 	int					thickness;
 
 	if (data->player_x >= MAP_WIDTH)
@@ -31,8 +31,8 @@ void	draw_direction_line(t_data *data)
 	}
 }
 
-static void	init_thick_line_params(t_data *data, t_thick_line_params *p,
-	t_draw_line_params *line_params)
+static void	init_thick_line_params(t_data *data, t_line_iter *p,
+	t_line_params *line_params)
 {
 	float	perpendicular_x;
 	float	perpendicular_y;
@@ -51,9 +51,9 @@ static void	init_thick_line_params(t_data *data, t_thick_line_params *p,
 	p->y = data->player_y + perpendicular_y;
 }
 
-void	draw_thick_line(t_data *data, t_draw_line_params *line_params)
+void	draw_thick_line(t_data *data, t_line_params *line_params)
 {
-	t_thick_line_params	p;
+	t_line_iter	p;
 	int					step;
 
 	init_thick_line_params(data, &p, line_params);
