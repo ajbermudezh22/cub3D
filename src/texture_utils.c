@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 17:51:59 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/01 17:54:04 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 08:06:12 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y)
 	return (texture_addr[tex_y * tex->tex_width + tex_x]);
 }
 
-void	render_3d_view_textured(t_data *data, t_texture *tex)
+void	render_3d_view_textured(t_data *data, t_texture *tex, int x_offset)
 {
 	float			fov;
 	float			start_angle;
@@ -66,7 +66,7 @@ void	render_3d_view_textured(t_data *data, t_texture *tex)
 	{
 		ray_angle = start_angle + (fov * x / VIEW_WIDTH);
 		ray_result = cast_ray_with_texture_info(data, ray_angle);
-		draw_textured_wall_slice(data, x, ray_result, tex);
+		draw_textured_wall_slice(data, x + x_offset, ray_result, tex);
 		x++;
 	}
 }

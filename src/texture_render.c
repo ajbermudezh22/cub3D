@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:15:00 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/01 18:41:08 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 08:16:48 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	render_texture_ceiling(t_texture_wall_vars *vars, t_data *data,
 	vars->y = 0;
 	while (vars->y < vars->wall_start)
 	{
-		my_mlx_pixel_put(data, MAP_WIDTH + screen_x, vars->y,
+		my_mlx_pixel_put(data, screen_x, vars->y,
 			tex->ceiling_color);
 		vars->y++;
 	}
@@ -49,7 +49,7 @@ void	render_texture_floor(t_texture_wall_vars *vars, t_data *data,
 	vars->y = vars->wall_end + 1;
 	while (vars->y < HEIGHT)
 	{
-		my_mlx_pixel_put(data, MAP_WIDTH + screen_x, vars->y,
+		my_mlx_pixel_put(data, screen_x, vars->y,
 			tex->floor_color);
 		vars->y++;
 	}
@@ -73,7 +73,7 @@ void	render_texture_wall_pixels(t_texture_wall_vars *vars,
 		vars->r = ((vars->color >> 16) & 0xFF) * vars->shade_factor;
 		vars->g = ((vars->color >> 8) & 0xFF) * vars->shade_factor;
 		vars->b = (vars->color & 0xFF) * vars->shade_factor;
-		my_mlx_pixel_put(params->data, MAP_WIDTH + params->screen_x, vars->y,
+		my_mlx_pixel_put(params->data, params->screen_x, vars->y,
 			(vars->r << 16) | (vars->g << 8) | vars->b);
 		vars->y++;
 	}

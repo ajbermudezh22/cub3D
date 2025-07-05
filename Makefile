@@ -3,7 +3,7 @@
 # ──────────────────────────────────────────────────────────────────────────────
 
 NAME      := cub3d
-CC        := gcc
+CC        := cc
 CFLAGS    := -Wall -Wextra -Werror -g \
              -I./includes \
              -I./libft \
@@ -40,6 +40,7 @@ SRCS_LIST := main.c \
 			 view.c \
 			 wall_render.c \
              window.c \
+			 window_management.c \
 			 window_utils.c
 SRCS      := $(addprefix $(SRC_DIR)/, $(SRCS_LIST))
 

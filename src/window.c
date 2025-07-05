@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:39 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/01 18:41:53 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 08:07:38 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	handle_rotation(int keycode, float *new_angle)
 		*new_angle += rotation_speed;
 }
 
-static void	update_player_state(t_data *data, float new_x, float new_y,
+void	update_player_state(t_data *data, float new_x, float new_y,
 	float new_angle)
 {
 	float	old_y;
@@ -92,7 +92,10 @@ int	key_hook(int keycode, t_data *data)
 	handle_movement(keycode, data, &new_x, &new_y);
 	handle_rotation(keycode, &new_angle);
 	if (keycode == ' ')
+	{
 		data->view_mode = (data->view_mode + 1) % 3;
+		resize_window(data);
+	}
 	if (new_x != data->player_x || new_y != data->player_y
 		|| new_angle != data->player_angle)
 	{

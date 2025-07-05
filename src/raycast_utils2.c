@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:23 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/01 18:54:56 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 08:19:55 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ float	calculate_distance(t_data *data, float current_x, float current_y)
 void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color)
 {
 	t_line_iter	line;
-	int						step;
+	int			step;
 
 	if (hit_x >= MAP_WIDTH)
 		return ;

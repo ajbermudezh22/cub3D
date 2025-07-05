@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 18:54:54 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/01 18:40:45 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 08:06:11 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,16 @@ void	init_mlx(t_data *data)
 		printf("Error: Failed to initialize MLX\n");
 		exit(1);
 	}
-	data->win = mlx_new_window(data->mlx, WIDTH, HEIGHT, "Cub3D - 2D/3D View");
-	if (!data->win)
-	{
-		printf("Error: Failed to create window\n");
-		exit(1);
-	}
-	data->img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
-	if (!data->img)
-	{
-		printf("Error: Failed to create image\n");
-		exit(1);
-	}
-	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel,
-			&data->line_len, &data->endian);
-	if (!data->addr)
-	{
-		printf("Error: Failed to get image data address\n");
-		exit(1);
-	}
+	data->win = NULL;
+	data->img = NULL;
+	resize_window(data);
 }
 
 void	init_textures(t_data *data)
 {
 	data->player_dx = cos(data->player_angle);
 	data->player_dy = sin(data->player_angle);
-	data->view_mode = 1;
+	data->view_mode = 0;
 	if (!load_textures(data))
 	{
 		printf("Error: Could not initialize textures\n");
@@ -56,12 +40,26 @@ void	init_textures(t_data *data)
 
 void	render_complete_view(t_data *data)
 {
-	clear_2d_view(data);
-	clear_3d_view(data);
-	draw_map_2d(data);
-	draw_player_2d(data);
-	draw_separator(data);
-	render_3d_view_textured(data, &data->texture);
+	if (data->view_mode == 0)
+	{
+		clear_3d_view(data);
+		render_3d_view_textured(data, &data->texture, 0);
+	}
+	else if (data->view_mode == 1)
+	{
+		clear_2d_view(data);
+		draw_map_2d(data);
+		draw_player_2d(data);
+	}
+	else
+	{
+		clear_2d_view(data);
+		clear_3d_view(data);
+		draw_map_2d(data);
+		draw_player_2d(data);
+		draw_separator(data);
+		render_3d_view_textured(data, &data->texture, MAP_WIDTH);
+	}
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 }
 

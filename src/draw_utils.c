@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 18:30:44 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/01 18:54:45 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 08:20:15 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	draw_direction_line(t_data *data)
 {
 	int					line_length;
-	t_line_params	line_params;
+	t_line_params		line_params;
 	int					thickness;
 
 	if (data->player_x >= MAP_WIDTH)
@@ -54,7 +54,7 @@ static void	init_thick_line_params(t_data *data, t_line_iter *p,
 void	draw_thick_line(t_data *data, t_line_params *line_params)
 {
 	t_line_iter	p;
-	int					step;
+	int			step;
 
 	init_thick_line_params(data, &p, line_params);
 	if (p.steps <= 0)

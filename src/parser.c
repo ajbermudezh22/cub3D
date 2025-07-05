@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:19 by albermud          #+#    #+#             */
-/*   Updated: 2025/06/30 07:25:21 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 17:20:39 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,10 @@ static int	validate_parsed_data(t_config *config)
 {
 	if (!check_config_complete(config))
 		return (0);
-	find_player_position(config);
-	if (!validate_map(config))
-	{
-		printf("Error: Invalid map\n");
+	if (!find_and_validate_player_position(config))
 		return (0);
-	}
+	if (!validate_map(config))
+		return (0);
 	return (1);
 }
 
@@ -94,5 +92,6 @@ int	parse_cub_file(char *filename, t_config *config)
 	fclose(file);
 	if (!validate_parsed_data(config))
 		return (0);
+	config->map_grid[config->player_y][config->player_x] = '0';
 	return (1);
 }

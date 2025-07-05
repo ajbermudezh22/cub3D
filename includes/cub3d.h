@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/01 19:14:25 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 17:22:43 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,8 @@ typedef struct s_data
 	int			map_s;
 	int			map_width;
 	int			map_height;
+	int			win_width;
+	int			win_height;
 	int			player_x;
 	int			player_y;
 	float		player_angle;
@@ -263,7 +265,6 @@ void			free_config(t_config *config);
 int				parse_color(char *line, int *r, int *g, int *b);
 int				parse_texture_path(char *line, char **path, char *cub_file_dir);
 int				validate_map(t_config *config);
-void			find_player_position(t_config *config);
 
 // parser_utils.c
 int				process_line(char *line, t_config *config, char *cub_file_dir,
@@ -274,6 +275,7 @@ int				read_map(char *line, t_config *config, char ***temp_map,
 					int *map_lines);
 void			copy_and_pad_map(t_config *config, char **temp_map,
 					int map_lines);
+int				find_and_validate_player_position(t_config *config);
 
 // raycaster.c
 float			cast_ray_2d(t_data *data, float ray_angle, int *hit_x,
@@ -314,7 +316,8 @@ int				get_texture_pixel(t_texture *tex, int wall_side, int tex_x,
 void			draw_textured_wall_slice(t_data *data, int screen_x,
 					t_ray_result ray_result, t_texture *tex);
 t_ray_result	cast_ray_with_texture_info(t_data *data, float ray_angle);
-void			render_3d_view_textured(t_data *data, t_texture *tex);
+void			render_3d_view_textured(t_data *data, t_texture *tex,
+					int x_offset);
 
 // texture_raycast.c
 void			normalize_ray_angle(float *ray_angle);
@@ -343,7 +346,18 @@ void			draw_floor(t_data *data, t_wall *wall);
 void			draw_textured_wall(t_data *data, t_wall *wall);
 
 // window.c
-void			init_textures(t_data *data);
+int				key_hook(int keycode, t_data *data);
+int				close_hook(t_data *data);
+void			update_player_state(t_data *data, float new_x, float new_y,
+					float new_angle);
+
+// window_utils.c
 void			init_mlx(t_data *data);
+void			init_textures(t_data *data);
+void			render_complete_view(t_data *data);
+void			draw_separator(t_data *data);
+
+// window_management.c
+void			resize_window(t_data *data);
 
 #endif
