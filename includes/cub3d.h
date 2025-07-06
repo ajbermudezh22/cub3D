@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/06 07:51:00 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 18:53:39 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,19 @@ typedef struct s_texture_wall_vars
 	int		g;
 	int		b;
 }	t_texture_wall_vars;
+
+typedef struct s_mlx
+{
+	void	*mlx;
+	void	*win;
+}	t_mlx;
+
+typedef struct s_parser_state
+{
+	char	**temp_map;
+	int		map_lines;
+	int		map_started;
+}				t_parser_state;
 
 typedef struct s_config
 {
@@ -264,6 +277,9 @@ int				parse_cub_file(char *filename, t_config *config);
 void			free_config(t_config *config);
 int				parse_color(char *line, int *r, int *g, int *b);
 int				parse_texture_path(char *line, char **path, char *cub_file_dir);
+
+// parser_content.c
+int				parse_file_content(int fd, t_config *config, char *cub_file_dir);
 
 // parser_utils.c
 int				count_char(char *str, char c);

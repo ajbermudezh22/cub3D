@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 08:10:00 by albermud          #+#    #+#             */
-/*   Updated: 2025/06/30 08:10:21 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 08:37:24 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,12 @@ void	init_wall(t_data *data, t_wall *wall, int x, float distance)
 void	draw_ceiling(t_data *data, t_wall *wall)
 {
 	int		y;
-	float	ceiling_factor;
-	int		ceiling_shade;
-	int		ceiling_color;
 
 	y = 0;
 	while (y < wall->wall_start)
 	{
-		ceiling_factor = (float)y / wall->wall_start_f;
-		ceiling_shade = (int)(0x44 * (0.3f + 0.7f * ceiling_factor));
-		ceiling_color = (ceiling_shade << 8) | ceiling_shade;
-		my_mlx_pixel_put(data, MAP_WIDTH + wall->x, y, ceiling_color);
+		my_mlx_pixel_put(data, MAP_WIDTH + wall->x, y,
+			data->texture.ceiling_color);
 		y++;
 	}
 }
@@ -55,24 +50,12 @@ void	draw_ceiling(t_data *data, t_wall *wall)
 void	draw_floor(t_data *data, t_wall *wall)
 {
 	int		y;
-	float	floor_dist;
-	float	floor_shade;
-	int		checker_x;
-	int		checker_y;
 
 	y = wall->wall_end + 1;
 	while (y < HEIGHT)
 	{
-		floor_dist = (float)(y - wall->wall_end) / (HEIGHT - wall->wall_end);
-		floor_shade = 0.3f - (floor_dist * 0.2f);
-		if (floor_shade < 0.05f)
-			floor_shade = 0.05f;
-		checker_x = (wall->x + (int)(wall->distance * 0.1f)) / 32;
-		checker_y = (int)(wall->distance + y * 2) / 32;
-		if ((checker_x + checker_y) % 2)
-			floor_shade *= 1.2f;
 		my_mlx_pixel_put(data, MAP_WIDTH + wall->x, y,
-			((int)(0x33 * floor_shade)) << 8);
+			data->texture.floor_color);
 		y++;
 	}
 }

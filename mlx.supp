@@ -1,5 +1,5 @@
 {
-   MLX_X11_WriteV
+   MLX_X11_WriteV_Error
    Memcheck:Param
    writev(vector[0])
    fun:writev
@@ -11,7 +11,42 @@
    fun:XWindowEvent
    fun:mlx_int_wait_first_expose
    fun:mlx_new_window
+   fun:resize_window
    fun:init_mlx
    fun:init_program
-   fun:main
+}
+
+{
+   <MLX_Uninit>
+   Memcheck:Value8
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XInitExtension
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XOpenDisplay
+   fun:mlx_init
+   fun:init_mlx
+}
+
+{
+   <MLX_Cond>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XInitExtension
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XOpenDisplay
+   fun:mlx_init
+}
+
+{
+   MLX_X11_Leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:XOpenDisplay
+   fun:mlx_init
+   fun:init_mlx
 }

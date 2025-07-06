@@ -2,7 +2,7 @@
 #                                  cub3d Makefile
 # ──────────────────────────────────────────────────────────────────────────────
 
-NAME      := cub3d
+NAME      := cub3D
 CC        := cc
 CFLAGS    := -Wall -Wextra -Werror -g \
              -I./includes \
@@ -26,6 +26,7 @@ SRCS_LIST := main.c \
              map.c \
 			 parser.c \
 			 parser_config.c \
+			 parser_content.c \
 			 parser_map.c \
 			 parser_utils.c \
 			 parser_utils2.c \

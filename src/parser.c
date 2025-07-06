@@ -6,39 +6,11 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 13:21:19 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/05 17:20:39 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 18:56:00 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-static int	parse_file_content(FILE *file, t_config *config, char *cub_file_dir)
-{
-	char	line[1024];
-	int		map_started;
-	int		map_lines;
-	char	**temp_map;
-	int		ret;
-
-	map_started = 0;
-	map_lines = 0;
-	temp_map = NULL;
-	while (fgets(line, sizeof(line), file))
-	{
-		if (line[0] == '\n' || line[0] == '\0')
-			continue ;
-		ret = process_line(line, config, cub_file_dir, &map_started);
-		if (ret == 0)
-			return (0);
-		if (ret == 2)
-		{
-			if (!read_map(line, config, &temp_map, &map_lines))
-				return (0);
-		}
-	}
-	copy_and_pad_map(config, temp_map, map_lines);
-	return (1);
-}
 
 static int	validate_parsed_data(t_config *config)
 {
@@ -51,7 +23,7 @@ static int	validate_parsed_data(t_config *config)
 	return (1);
 }
 
-static int	parse_content(FILE *file, t_config *config, char *filename)
+static int	parse_content(int fd, t_config *config, char *filename)
 {
 	char	*cub_file_dir;
 	char	*last_slash;
@@ -64,7 +36,7 @@ static int	parse_content(FILE *file, t_config *config, char *filename)
 		*last_slash = '\0';
 	else
 		ft_strcpy(cub_file_dir, ".");
-	if (!parse_file_content(file, config, cub_file_dir))
+	if (!parse_file_content(fd, config, cub_file_dir))
 	{
 		free(cub_file_dir);
 		return (0);
@@ -73,23 +45,40 @@ static int	parse_content(FILE *file, t_config *config, char *filename)
 	return (1);
 }
 
-int	parse_cub_file(char *filename, t_config *config)
+static int	check_and_open_file(char *filename)
 {
-	FILE	*file;
+	int	fd;
+	int	len;
 
-	file = fopen(filename, "r");
-	if (!file)
+	len = ft_strlen(filename);
+	if (len < 4 || ft_strcmp(filename + len - 4, ".cub") != 0)
+	{
+		printf("Error: Invalid file extension. Must be .cub\n");
+		return (-1);
+	}
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 	{
 		printf("Error: Cannot open file %s\n", filename);
-		return (0);
+		return (-1);
 	}
+	return (fd);
+}
+
+int	parse_cub_file(char *filename, t_config *config)
+{
+	int	fd;
+
+	fd = check_and_open_file(filename);
+	if (fd < 0)
+		return (0);
 	init_config(config);
-	if (!parse_content(file, config, filename))
+	if (!parse_content(fd, config, filename))
 	{
-		fclose(file);
+		close(fd);
 		return (0);
 	}
-	fclose(file);
+	close(fd);
 	if (!validate_parsed_data(config))
 		return (0);
 	config->map_grid[config->player_y][config->player_x] = '0';

@@ -1,0 +1,54 @@
+==83788== Memcheck, a memory error detector
+==83788== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==83788== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==83788== Command: ./cub3d map/good/cheese_maze.cub
+==83788== 
+==83788== Syscall param writev(vector[0]) points to uninitialised byte(s)
+==83788==    at 0x4BD7864: writev (writev.c:26)
+==83788==    by 0x4CCCACA: ??? (in /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0)
+==83788==    by 0x4CCCC4E: ??? (in /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0)
+==83788==    by 0x4CCDD7E: xcb_writev (in /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0)
+==83788==    by 0x48C70B8: _XSend (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==83788==    by 0x48CC148: _XReadEvents (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==83788==    by 0x48CC52B: XWindowEvent (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==83788==    by 0x116495: mlx_int_wait_first_expose (in /home/albermud/Documents/_42/Level 4/cub3d_3/cub3d)
+==83788==    by 0x1161DE: mlx_new_window (in /home/albermud/Documents/_42/Level 4/cub3d_3/cub3d)
+==83788==    by 0x114BAB: resize_window (window_management.c:62)
+==83788==    by 0x114C66: init_mlx (window_utils.c:25)
+==83788==    by 0x10FAD9: init_program (main.c:29)
+==83788==  Address 0x4d33d4c is 28 bytes inside a block of size 16,384 alloc'd
+==83788==    at 0x484D953: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==83788==    by 0x48B642D: XOpenDisplay (in /usr/lib/x86_64-linux-gnu/libX11.so.6.4.0)
+==83788==    by 0x115F67: mlx_init (in /home/albermud/Documents/_42/Level 4/cub3d_3/cub3d)
+==83788==    by 0x114C16: init_mlx (window_utils.c:17)
+==83788==    by 0x10FAD9: init_program (main.c:29)
+==83788==    by 0x10FCEC: main (main.c:75)
+==83788==  Uninitialised value was created by a stack allocation
+==83788==    at 0x1163B0: mlx_int_anti_resize_win (in /home/albermud/Documents/_42/Level 4/cub3d_3/cub3d)
+==83788== 
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Param
+   writev(vector[0])
+   fun:writev
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+   fun:xcb_writev
+   fun:_XSend
+   fun:_XReadEvents
+   fun:XWindowEvent
+   fun:mlx_int_wait_first_expose
+   fun:mlx_new_window
+   fun:resize_window
+   fun:init_mlx
+   fun:init_program
+}
+==83788== 
+==83788== HEAP SUMMARY:
+==83788==     in use at exit: 0 bytes in 0 blocks
+==83788==   total heap usage: 1,529 allocs, 1,529 frees, 680,905 bytes allocated
+==83788== 
+==83788== All heap blocks were freed -- no leaks are possible
+==83788== 
+==83788== For lists of detected and suppressed errors, rerun with: -s
+==83788== ERROR SUMMARY: 12 errors from 1 contexts (suppressed: 0 from 0)
