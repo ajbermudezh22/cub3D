@@ -29,6 +29,7 @@ SRCS_LIST := main.c \
 			 parser_map.c \
 			 parser_utils.c \
 			 parser_utils2.c \
+			 parser_utils3.c \
              raycast.c \
 			 raycast_utils.c \
 			 raycast_utils2.c \

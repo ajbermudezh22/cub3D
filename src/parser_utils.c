@@ -6,13 +6,13 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:35:10 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/05 09:03:32 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 07:45:36 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-static int	count_char(char *str, char c)
+int	count_char(char *str, char c)
 {
 	int	count;
 	int	i;
@@ -28,7 +28,7 @@ static int	count_char(char *str, char c)
 	return (count);
 }
 
-static int	process_and_validate_colors(char **split, int *r, int *g, int *b)
+int	process_and_validate_colors(char **split, int *r, int *g, int *b)
 {
 	if (!split || !split[0] || !split[1] || !split[2] || split[3])
 	{
@@ -87,75 +87,5 @@ int	parse_texture_path(char *line, char **path, char *cub_file_dir)
 	free(trimmed_path);
 	if (!*path)
 		return (0);
-	return (1);
-}
-
-int	process_line(char *line, t_config *config, char *cub_file_dir,
-	int *map_started)
-{
-	char	*trimmed_line;
-	char	**tokens;
-
-	trimmed_line = ft_strtrim(line, " \t\n");
-	if (!trimmed_line || !*trimmed_line)
-	{
-		if (trimmed_line)
-			free(trimmed_line);
-		return (1);
-	}
-	tokens = ft_split(trimmed_line, ' ');
-	if (!tokens || !tokens[0])
-	{
-		free(trimmed_line);
-		ft_free_split(tokens);
-		return (1);
-	}
-	if (ft_strcmp(tokens[0], "NO") == 0)
-	{
-		free(trimmed_line);
-		return (parse_texture_path(tokens[1], &config->north_texture_path,
-				cub_file_dir));
-	}
-	else if (ft_strcmp(tokens[0], "SO") == 0)
-	{
-		free(trimmed_line);
-		return (parse_texture_path(tokens[1], &config->south_texture_path,
-				cub_file_dir));
-	}
-	else if (ft_strcmp(tokens[0], "WE") == 0)
-	{
-		free(trimmed_line);
-		return (parse_texture_path(tokens[1], &config->west_texture_path,
-				cub_file_dir));
-	}
-	else if (ft_strcmp(tokens[0], "EA") == 0)
-	{
-		free(trimmed_line);
-		return (parse_texture_path(tokens[1], &config->east_texture_path,
-				cub_file_dir));
-	}
-	else if (ft_strcmp(tokens[0], "F") == 0)
-	{
-		free(trimmed_line);
-		return (parse_color(tokens[1], &config->floor_r, &config->floor_g,
-				&config->floor_b));
-	}
-	else if (ft_strcmp(tokens[0], "C") == 0)
-	{
-		free(trimmed_line);
-		return (parse_color(tokens[1], &config->ceiling_r, &config->ceiling_g,
-				&config->ceiling_b));
-	}
-	else if (trimmed_line[0] == '1' || trimmed_line[0] == '0'
-		|| ft_strchr(line, 'N') || ft_strchr(line, 'S')
-		|| ft_strchr(line, 'E') || ft_strchr(line, 'W'))
-	{
-		*map_started = 1;
-		free(trimmed_line);
-		ft_free_split(tokens);
-		return (2);
-	}
-	free(trimmed_line);
-	ft_free_split(tokens);
 	return (1);
 }

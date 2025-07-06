@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/06 07:38:44 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 07:51:00 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,12 +266,19 @@ int				parse_color(char *line, int *r, int *g, int *b);
 int				parse_texture_path(char *line, char **path, char *cub_file_dir);
 
 // parser_utils.c
-int				process_line(char *line, t_config *config, char *cub_file_dir,
-					int *map_started);
+int				count_char(char *str, char c);
+int				process_and_validate_colors(char **split, int *r, int *g,
+					int *b);
+int				parse_color(char *line, int *r, int *g, int *b);
+int				parse_texture_path(char *line, char **path, char *cub_file_dir);
 
 // parser_utils2.c
 int				find_and_validate_player_position(t_config *config);
 int				validate_map(t_config *config);
+
+// parser_utils3.c
+int				process_line(char *line, t_config *config, char *cub_file_dir,
+					int *map_started);
 
 // parser_map.c
 int				read_map(char *line, t_config *config, char ***temp_map,
