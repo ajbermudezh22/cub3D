@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/06 18:53:39 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 19:23:39 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,8 @@ int				parse_color(char *line, int *r, int *g, int *b);
 int				parse_texture_path(char *line, char **path, char *cub_file_dir);
 
 // parser_content.c
-int				parse_file_content(int fd, t_config *config, char *cub_file_dir);
+int				parse_file_content(int fd, t_config *config,
+					char *cub_file_dir);
 
 // parser_utils.c
 int				count_char(char *str, char c);
