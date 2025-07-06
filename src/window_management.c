@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 08:30:00 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/05 08:19:28 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/05 17:24:47 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,21 @@ static void	determine_new_dimensions(t_data *data, int *new_width,
 	data->win_height = *new_height;
 }
 
+static void	setup_window_hooks(t_data *data)
+{
+	data->img = mlx_new_image(data->mlx, data->win_width, data->win_height);
+	if (!data->img)
+	{
+		printf("Error: Failed to create image\n");
+		exit(1);
+	}
+	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel,
+			&data->line_len, &data->endian);
+	mlx_hook(data->win, 2, 1L << 0, key_hook, data);
+	mlx_hook(data->win, 17, 0L, close_hook, data);
+	render_complete_view(data);
+}
+
 void	resize_window(t_data *data)
 {
 	int	new_width;
@@ -51,15 +66,5 @@ void	resize_window(t_data *data)
 		printf("Error: Failed to create window\n");
 		exit(1);
 	}
-	data->img = mlx_new_image(data->mlx, data->win_width, data->win_height);
-	if (!data->img)
-	{
-		printf("Error: Failed to create image\n");
-		exit(1);
-	}
-	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel,
-			&data->line_len, &data->endian);
-	mlx_hook(data->win, 2, 1L << 0, key_hook, data);
-	mlx_hook(data->win, 17, 0L, close_hook, data);
-	render_complete_view(data);
+	setup_window_hooks(data);
 }

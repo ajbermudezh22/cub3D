@@ -6,7 +6,7 @@
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:43:07 by albbermu          #+#    #+#             */
-/*   Updated: 2025/07/05 17:22:43 by albermud         ###   ########.fr       */
+/*   Updated: 2025/07/06 07:38:44 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,18 +264,21 @@ int				parse_cub_file(char *filename, t_config *config);
 void			free_config(t_config *config);
 int				parse_color(char *line, int *r, int *g, int *b);
 int				parse_texture_path(char *line, char **path, char *cub_file_dir);
-int				validate_map(t_config *config);
 
 // parser_utils.c
 int				process_line(char *line, t_config *config, char *cub_file_dir,
 					int *map_started);
+
+// parser_utils2.c
+int				find_and_validate_player_position(t_config *config);
+int				validate_map(t_config *config);
 
 // parser_map.c
 int				read_map(char *line, t_config *config, char ***temp_map,
 					int *map_lines);
 void			copy_and_pad_map(t_config *config, char **temp_map,
 					int map_lines);
-int				find_and_validate_player_position(t_config *config);
+int				is_valid_cell(t_config *config, int y, int x);
 
 // raycaster.c
 float			cast_ray_2d(t_data *data, float ray_angle, int *hit_x,
