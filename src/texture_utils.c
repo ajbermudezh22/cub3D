@@ -53,18 +53,18 @@ int	get_texture_pixel(t_texture *tex, int wall_side, int tex_x, int tex_y)
 
 void	render_3d_view_textured(t_data *data, t_texture *tex, int x_offset)
 {
-	float			fov;
-	float			start_angle;
+	float			fov_rad;
 	int				x;
+	float			camera_x;
 	float			ray_angle;
 	t_ray_result	ray_result;
 
-	fov = FOV * DR;
-	start_angle = data->player_angle - (fov / 2);
+	fov_rad = FOV * DR; 
 	x = 0;
 	while (x < VIEW_WIDTH)
 	{
-		ray_angle = start_angle + (fov * x / VIEW_WIDTH);
+		camera_x = 2.0f * x / (float)VIEW_WIDTH - 1.0f;
+		ray_angle = data->player_angle + atanf(camera_x * tanf(fov_rad / 2.0f));
 		ray_result = cast_ray_with_texture_info(data, ray_angle);
 		draw_textured_wall_slice(data, x + x_offset, ray_result, tex);
 		x++;

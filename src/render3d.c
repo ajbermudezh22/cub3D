@@ -26,18 +26,18 @@ void	draw_wall_slice(t_data *data, int x, float distance, int wall_color)
 
 void	render_3d_view(t_data *data)
 {
-	float	fov;
-	float	start_angle;
-	int		x;
-	float	ray_angle;
-	float	distance;
+	float		fov_rad;
+	int			x;
+	float		camera_x;
+	float		ray_angle;
+	float		distance;
 
-	fov = FOV * DR;
-	start_angle = data->player_angle - (fov / 2);
+	fov_rad = FOV * DR;
 	x = 0;
 	while (x < VIEW_WIDTH)
 	{
-		ray_angle = start_angle + (fov * x / VIEW_WIDTH);
+		camera_x = 2.0f * x / (float)VIEW_WIDTH - 1.0f;
+		ray_angle = data->player_angle + atanf(camera_x * tanf(fov_rad / 2.0f));
 		distance = cast_ray_3d(data, ray_angle);
 		draw_wall_slice(data, x, distance, 0xFFFFFF);
 		x++;
