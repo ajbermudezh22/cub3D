@@ -1,7 +1,7 @@
-NO textures/test/north.xpm
-SO textures/test/south.xpm
-WE textures/test/west.xpm
-EA textures/test/east.xpm
+NO textures/simonkraft/wet_sponge.xpm
+SO textures/simonkraft/wet_sponge.xpm
+WE textures/simonkraft/wet_sponge.xpm
+EA textures/simonkraft/wet_sponge.xpm
 
 F 164,169,20
 C 153,204,255
@@ -17,7 +17,7 @@ C 153,204,255
 101011111010111110101
 101010001010100010101
 101110101010101010101
-100000101010001011001
+100000101010001010001
 111111101011111011101
 100000101000100010001
 101110101110101110111

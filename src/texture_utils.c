@@ -59,7 +59,7 @@ void	render_3d_view_textured(t_data *data, t_texture *tex, int x_offset)
 	float			ray_angle;
 	t_ray_result	ray_result;
 
-	fov_rad = FOV * DR; 
+	fov_rad = FOV * DR;
 	x = 0;
 	while (x < VIEW_WIDTH)
 	{
