@@ -51,7 +51,8 @@ static void	print_controls(void)
 {
 	printf("Controls:\n");
 	printf("W/S - Move forward/backward\n");
-	printf("A/D - Turn left/right\n");
+	printf("A/D - Move left/right\n");
+	printf("←/→ - Turn left/right\n");
 	printf("ESC - Exit program\n");
 	printf("SPACE - Switch view modes\n");
 }
