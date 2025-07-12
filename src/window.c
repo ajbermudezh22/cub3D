@@ -103,3 +103,9 @@ int	key_hook(int keycode, t_data *data)
 	}
 	return (0);
 }
+
+int	close_hook(t_data *data)
+{
+	mlx_loop_end(data->mlx);
+	return (0);
+}

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: albermud <albermud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/30 07:40:10 by albermud          #+#    #+#             */
-/*   Updated: 2025/07/06 07:38:19 by albermud         ###   ########.fr       */
+/*   Created: 2025/07/12 15:00:00 by albermud          #+#    #+#             */
+/*   Updated: 2025/07/12 15:00:00 by albermud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,30 @@ void	copy_and_pad_map(t_config *config, char **temp_map, int map_lines)
 		i++;
 	}
 	free(temp_map);
+}
+
+int	is_map_line(char *line)
+{
+	if (line[0] == '1' || line[0] == '0' || ft_strchr(line, 'N')
+		|| ft_strchr(line, 'S') || ft_strchr(line, 'E')
+		|| ft_strchr(line, 'W'))
+		return (1);
+	return (0);
+}
+
+char	**prepare_tokens(char *line)
+{
+	char	*trimmed_line;
+	char	**tokens;
+
+	trimmed_line = ft_strtrim(line, " \t\n");
+	if (!trimmed_line || !*trimmed_line)
+	{
+		if (trimmed_line)
+			free(trimmed_line);
+		return (NULL);
+	}
+	tokens = ft_split(trimmed_line, ' ');
+	free(trimmed_line);
+	return (tokens);
 }

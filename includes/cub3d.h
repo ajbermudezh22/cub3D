@@ -248,6 +248,15 @@ void			cast_and_draw_ray(t_data *data, t_ray_params *p, int i);
 void			draw_rays_2d(t_data *data);
 void			draw_player_2d(t_data *data);
 
+// utils.c
+int				is_wall(t_data *data, int x, int y);
+void			draw_map_2d(t_data *data);
+void			init_line_params(t_data *data, t_line_params *line_params,
+					t_line_iter *p);
+void			render_texture_ceiling(t_texture_wall_vars *vars, t_data *data,
+					int screen_x, t_texture *tex);
+void			render_texture_floor(t_texture_wall_vars *vars, t_data *data,
+					int screen_x, t_texture *tex);
 // draw_utils.c
 void			draw_direction_line(t_data *data);
 void			draw_thick_line(t_data *data, t_line_params *line_params);
@@ -260,13 +269,7 @@ void			cleanup_program(t_data *data);
 // map.c
 float			get_player_angle(char dir);
 void			setup_map_from_config(t_data *data);
-void			draw_map_2d(t_data *data);
-int				is_wall(t_data *data, int x, int y);
 void			draw_cell(t_data *data, int x, int y, int color);
-void			render_complete_view(t_data *data);
-void			draw_separator(t_data *data);
-int				key_hook(int keycode, t_data *data);
-int				close_hook(t_data *data);
 
 // parser_config.c
 int				check_config_complete(t_config *config);
@@ -303,6 +306,8 @@ int				read_map(char *line, t_config *config, char ***temp_map,
 void			copy_and_pad_map(t_config *config, char **temp_map,
 					int map_lines);
 int				is_valid_cell(t_config *config, int y, int x);
+int				is_map_line(char *line);
+char			**prepare_tokens(char *line);
 
 // raycaster.c
 float			cast_ray_2d(t_data *data, float ray_angle, int *hit_x,
@@ -314,14 +319,16 @@ float			calculate_distance(t_data *data, float current_x,
 					float current_y);
 int				check_wall_hit(t_data *data, float current_x, float current_y);
 
-// render3d.c
-float			cast_ray_3d(t_data *data, float ray_angle);
+// render.c
 void			draw_wall_slice(t_data *data, int x, float distance,
 					int wall_color);
-int				blend_colors(int color1, int color2, float alpha);
 void			render_3d_view(t_data *data);
 void			clear_3d_view(t_data *data);
 void			clear_2d_view(t_data *data);
+
+// raycast.c
+float			cast_ray_3d(t_data *data, float ray_angle);
+int				blend_colors(int color1, int color2, float alpha);
 
 // Raycasting functions
 void			init_ray(t_data *data, t_ray *ray, float ray_angle);
@@ -360,10 +367,6 @@ void			set_wall_distance(t_raycast *vars,
 // texture_render.c
 void			init_texture_wall_vars(t_texture_wall_vars *vars,
 					t_ray_result ray_result, t_data *data, t_texture *tex);
-void			render_texture_ceiling(t_texture_wall_vars *vars, t_data *data,
-					int screen_x, t_texture *tex);
-void			render_texture_floor(t_texture_wall_vars *vars, t_data *data,
-					int screen_x, t_texture *tex);
 void			render_texture_wall_pixels(t_texture_wall_vars *vars,
 					t_wall_pixel_params *params);
 
@@ -382,9 +385,9 @@ void			update_player_state(t_data *data, float new_x, float new_y,
 void			init_mlx(t_data *data);
 void			init_textures(t_data *data);
 void			render_complete_view(t_data *data);
-void			draw_separator(t_data *data);
-
-// window_management.c
 void			resize_window(t_data *data);
+
+// render.c
+void			draw_separator(t_data *data);
 
 #endif

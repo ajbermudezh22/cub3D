@@ -31,30 +31,6 @@ void	init_texture_wall_vars(t_texture_wall_vars *vars,
 		vars->tex_x = tex->tex_width - vars->tex_x - 1;
 }
 
-void	render_texture_ceiling(t_texture_wall_vars *vars, t_data *data,
-	int screen_x, t_texture *tex)
-{
-	vars->y = 0;
-	while (vars->y < vars->wall_start)
-	{
-		my_mlx_pixel_put(data, screen_x, vars->y,
-			tex->ceiling_color);
-		vars->y++;
-	}
-}
-
-void	render_texture_floor(t_texture_wall_vars *vars, t_data *data,
-	int screen_x, t_texture *tex)
-{
-	vars->y = vars->wall_end + 1;
-	while (vars->y < HEIGHT)
-	{
-		my_mlx_pixel_put(data, screen_x, vars->y,
-			tex->floor_color);
-		vars->y++;
-	}
-}
-
 void	render_texture_wall_pixels(t_texture_wall_vars *vars,
 	t_wall_pixel_params *params)
 {
@@ -77,4 +53,51 @@ void	render_texture_wall_pixels(t_texture_wall_vars *vars,
 			(vars->r << 16) | (vars->g << 8) | vars->b);
 		vars->y++;
 	}
+}
+
+static void	draw_top_edge(t_data *data, t_wall *wall)
+{
+	float	alpha;
+	int		blended;
+	int		wall_base;
+
+	if (wall->wall_start_f > 0 && wall->wall_start_f < HEIGHT)
+	{
+		alpha = wall->wall_start_f - (int)wall->wall_start_f;
+		if (alpha > 0 && wall->wall_start > 0)
+		{
+			wall_base = (int)(180 * wall->shade_factor);
+			blended = blend_colors(0x001144,
+					wall_base << 16 | wall_base << 8 | wall_base, alpha);
+			my_mlx_pixel_put(data, MAP_WIDTH + wall->x,
+				wall->wall_start - 1, blended);
+		}
+	}
+}
+
+static void	draw_bottom_edge(t_data *data, t_wall *wall)
+{
+	float	alpha;
+	int		blended;
+	int		wall_base;
+
+	if (wall->wall_end_f < HEIGHT - 1 && wall->wall_end_f > 0)
+	{
+		alpha = (int)(wall->wall_end_f + 1) - wall->wall_end_f;
+		if (alpha > 0 && wall->wall_end < HEIGHT - 1)
+		{
+			wall_base = (int)(180 * wall->shade_factor);
+			blended = blend_colors(
+					wall_base << 16 | wall_base << 8 | wall_base,
+					0x003300, alpha);
+			my_mlx_pixel_put(data, MAP_WIDTH + wall->x,
+				wall->wall_end + 1, blended);
+		}
+	}
+}
+
+void	draw_antialiased_edges(t_data *data, t_wall *wall)
+{
+	draw_top_edge(data, wall);
+	draw_bottom_edge(data, wall);
 }

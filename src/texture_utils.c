@@ -78,3 +78,18 @@ void	set_floor_ceiling_colors(t_texture *tex, t_config *config)
 	tex->ceiling_color = (config->ceiling_r << 16)
 		| (config->ceiling_g << 8) | config->ceiling_b;
 }
+
+int	blend_colors(int color1, int color2, float alpha)
+{
+	int	r;
+	int	g;
+	int	b;
+
+	r = (int)(((color1 >> 16) & 0xFF) * (1.0f - alpha)
+			+ ((color2 >> 16) & 0xFF) * alpha);
+	g = (int)(((color1 >> 8) & 0xFF) * (1.0f - alpha)
+			+ ((color2 >> 8) & 0xFF) * alpha);
+	b = (int)((color1 & 0xFF) * (1.0f - alpha)
+			+ (color2 & 0xFF) * alpha);
+	return ((r << 16) | (g << 8) | b);
+}

@@ -14,8 +14,22 @@
 
 static int	validate_parsed_data(t_config *config)
 {
-	if (!check_config_complete(config))
+	if (!config->north_texture_path || !config->south_texture_path
+		|| !config->west_texture_path || !config->east_texture_path)
+	{
+		printf("Error: Missing texture paths\n");
 		return (0);
+	}
+	if (config->floor_r == -1 || config->ceiling_r == -1)
+	{
+		printf("Error: Missing floor or ceiling colors\n");
+		return (0);
+	}
+	if (config->map_height == 0)
+	{
+		printf("Error: No map found\n");
+		return (0);
+	}
 	if (!find_and_validate_player_position(config))
 		return (0);
 	if (!validate_map(config))
@@ -83,4 +97,24 @@ int	parse_cub_file(char *filename, t_config *config)
 		return (0);
 	config->map_grid[config->player_y][config->player_x] = '0';
 	return (1);
+}
+
+void	init_config(t_config *config)
+{
+	config->north_texture_path = NULL;
+	config->south_texture_path = NULL;
+	config->west_texture_path = NULL;
+	config->east_texture_path = NULL;
+	config->floor_r = -1;
+	config->floor_g = -1;
+	config->floor_b = -1;
+	config->ceiling_r = -1;
+	config->ceiling_g = -1;
+	config->ceiling_b = -1;
+	config->map_grid = NULL;
+	config->map_width = 0;
+	config->map_height = 0;
+	config->player_x = -1;
+	config->player_y = -1;
+	config->player_dir = '\0';
 }

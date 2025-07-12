@@ -63,20 +63,40 @@ void	render_complete_view(t_data *data)
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 }
 
-void	draw_separator(t_data *data)
+static void	setup_window_hooks(t_data *data)
 {
-	int	y;
-
-	y = -1;
-	while (++y < HEIGHT)
+	data->img = mlx_new_image(data->mlx, data->win_width, data->win_height);
+	if (!data->img)
 	{
-		my_mlx_pixel_put(data, MAP_WIDTH, y, 0xFFFFFF);
-		my_mlx_pixel_put(data, MAP_WIDTH - 1, y, 0xFFFFFF);
+		printf("Error: Failed to create image\n");
+		exit(1);
 	}
+	data->addr = (int *)mlx_get_data_addr(data->img, &data->bits_per_pixel,
+			&data->line_len, &data->endian);
+	mlx_hook(data->win, 2, 1L << 0, key_hook, data);
+	mlx_hook(data->win, 17, 0L, close_hook, data);
+	render_complete_view(data);
 }
 
-int	close_hook(t_data *data)
+void	resize_window(t_data *data)
 {
-	mlx_loop_end(data->mlx);
-	return (0);
+	if (data->win)
+		mlx_destroy_window(data->mlx, data->win);
+	if (data->img)
+		mlx_destroy_image(data->mlx, data->img);
+	if (data->view_mode == 0)
+		data->win_width = VIEW_WIDTH;
+	else if (data->view_mode == 1)
+		data->win_width = MAP_WIDTH;
+	else
+		data->win_width = WIDTH;
+	data->win_height = HEIGHT;
+	data->win = mlx_new_window(data->mlx, data->win_width, data->win_height,
+			"Cub3D - 2D/3D View");
+	if (!data->win)
+	{
+		printf("Error: Failed to create window\n");
+		exit(1);
+	}
+	setup_window_hooks(data);
 }

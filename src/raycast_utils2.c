@@ -86,3 +86,31 @@ void	draw_ray_line(t_data *data, int hit_x, int hit_y, int color)
 		line.y += line.dy;
 	}
 }
+
+void	draw_player_circle(t_data *data)
+{
+	int	size;
+	int	x;
+	int	y;
+	int	px;
+	int	py;
+
+	size = 8;
+	if (data->player_x >= MAP_WIDTH)
+		return ;
+	y = -size - 1;
+	while (++y <= size)
+	{
+		x = -size - 1;
+		while (++x <= size)
+		{
+			if (x * x + y * y <= size * size)
+			{
+				px = data->player_x + x;
+				py = data->player_y + y;
+				if (px < MAP_WIDTH)
+					my_mlx_pixel_put(data, px, py, 0xFFFF00);
+			}
+		}
+	}
+}

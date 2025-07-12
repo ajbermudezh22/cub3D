@@ -77,7 +77,12 @@ static int	check_cell(t_config *config, int y, int x)
 	}
 	if (c == '0' || ft_strchr("NSEW", c))
 	{
-		if (!is_valid_cell(config, y, x))
+		if (y == 0 || y == config->map_height - 1 || x == 0
+			|| x == config->map_width - 1
+			|| config->map_grid[y - 1][x] == ' '
+			|| config->map_grid[y + 1][x] == ' '
+			|| config->map_grid[y][x - 1] == ' '
+			|| config->map_grid[y][x + 1] == ' ')
 		{
 			printf("Error: Map is not enclosed by walls.\n");
 			return (0);

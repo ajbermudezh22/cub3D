@@ -43,3 +43,39 @@ void	draw_player_2d(t_data *data)
 	draw_player_circle(data);
 	draw_direction_line(data);
 }
+
+void	draw_direction_line(t_data *data)
+{
+	int					line_length;
+	t_line_params		line_params;
+	int					thickness;
+
+	if (data->player_x >= MAP_WIDTH)
+		return ;
+	line_length = 30;
+	line_params.end_x = data->player_x + data->player_dx * line_length;
+	line_params.end_y = data->player_y + data->player_dy * line_length;
+	thickness = -3;
+	while (++thickness <= 2)
+	{
+		line_params.thickness = thickness;
+		draw_thick_line(data, &line_params);
+	}
+}
+
+void	draw_thick_line(t_data *data, t_line_params *line_params)
+{
+	t_line_iter	p;
+	int			step;
+
+	init_line_params(data, line_params, &p);
+	if (p.steps <= 0)
+		return ;
+	step = -1;
+	while (++step < (int)p.steps && p.x < MAP_WIDTH)
+	{
+		my_mlx_pixel_put(data, (int)p.x, (int)p.y, 0xFF0000);
+		p.x += p.dx;
+		p.y += p.dy;
+	}
+}

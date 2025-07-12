@@ -89,3 +89,28 @@ int	parse_texture_path(char *line, char **path, char *cub_file_dir)
 		return (0);
 	return (1);
 }
+
+void	free_config(t_config *config)
+{
+	int	i;
+
+	if (config->north_texture_path)
+		free(config->north_texture_path);
+	if (config->south_texture_path)
+		free(config->south_texture_path);
+	if (config->west_texture_path)
+		free(config->west_texture_path);
+	if (config->east_texture_path)
+		free(config->east_texture_path);
+	if (config->map_grid)
+	{
+		i = 0;
+		while (i < config->map_height)
+		{
+			if (config->map_grid[i])
+				free(config->map_grid[i]);
+			i++;
+		}
+		free(config->map_grid);
+	}
+}

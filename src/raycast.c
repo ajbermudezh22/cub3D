@@ -108,3 +108,14 @@ float	cast_ray_3d(t_data *data, float ray_angle)
 	distance = distance * cosf(angle_diff);
 	return (distance);
 }
+
+void	draw_hit_point(t_data *data, int hit_x, int hit_y)
+{
+	if (hit_x >= MAP_WIDTH)
+		return ;
+	my_mlx_pixel_put(data, hit_x, hit_y, 0xFF0000);
+	my_mlx_pixel_put(data, hit_x - 1, hit_y, 0xFF0000);
+	my_mlx_pixel_put(data, hit_x + 1, hit_y, 0xFF0000);
+	my_mlx_pixel_put(data, hit_x, hit_y - 1, 0xFF0000);
+	my_mlx_pixel_put(data, hit_x, hit_y + 1, 0xFF0000);
+}
