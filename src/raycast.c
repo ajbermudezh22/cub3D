@@ -101,6 +101,10 @@ float	cast_ray_3d(t_data *data, float ray_angle)
 				+ (1 - ray.step_y) / 2) / ray.dy;
 	distance = ray.perp_wall_dist * data->map_s;
 	angle_diff = ray.angle - data->player_angle;
+	while (angle_diff > PI)
+		angle_diff -= 2 * PI;
+	while (angle_diff < -PI)
+		angle_diff += 2 * PI;
 	distance = distance * cosf(angle_diff);
 	return (distance);
 }

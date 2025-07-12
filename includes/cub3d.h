@@ -64,7 +64,7 @@ typedef struct s_texture_raycast_vars
 	float	side_dist_y;
 	int		hit;
 	float	perp_wall_dist;
-}	t_texture_raycast_vars;
+}	t_raycast;
 
 typedef struct s_texture_wall_vars
 {
@@ -348,13 +348,13 @@ void			render_3d_view_textured(t_data *data, t_texture *tex,
 
 // texture_raycast.c
 void			normalize_ray_angle(float *ray_angle);
-void			init_texture_raycast(t_data *data, t_texture_raycast_vars *vars,
+void			init_texture_raycast(t_data *data, t_raycast *vars,
 					float ray_angle);
-void			setup_texture_step_dist(t_texture_raycast_vars *vars,
+void			setup_texture_step_dist(t_raycast *vars,
 					t_ray_result *result, t_data *data);
-void			execute_texture_dda(t_texture_raycast_vars *vars,
+void			execute_texture_dda(t_raycast *vars,
 					t_ray_result *result, t_data *data);
-void			calculate_texture_wall_distance(t_texture_raycast_vars *vars,
+void			set_wall_distance(t_raycast *vars,
 					t_ray_result *result, t_data *data);
 
 // texture_render.c

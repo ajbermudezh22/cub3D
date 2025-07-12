@@ -20,7 +20,7 @@ void	normalize_ray_angle(float *ray_angle)
 		*ray_angle -= 2 * M_PI;
 }
 
-void	init_texture_raycast(t_data *data, t_texture_raycast_vars *vars,
+void	init_texture_raycast(t_data *data, t_raycast *vars,
 	float ray_angle)
 {
 	vars->px = data->player_x;
@@ -34,7 +34,7 @@ void	init_texture_raycast(t_data *data, t_texture_raycast_vars *vars,
 	vars->hit = 0;
 }
 
-void	setup_texture_step_dist(t_texture_raycast_vars *vars,
+void	setup_texture_step_dist(t_raycast *vars,
 	t_ray_result *result, t_data *data)
 {
 	if (vars->dx < 0)
@@ -63,7 +63,7 @@ void	setup_texture_step_dist(t_texture_raycast_vars *vars,
 	}
 }
 
-void	execute_texture_dda(t_texture_raycast_vars *vars,
+void	execute_texture_dda(t_raycast *vars,
 	t_ray_result *result, t_data *data)
 {
 	while (vars->hit == 0)
@@ -87,17 +87,16 @@ void	execute_texture_dda(t_texture_raycast_vars *vars,
 	}
 }
 
-void	calculate_texture_wall_distance(t_texture_raycast_vars *vars,
-	t_ray_result *result, t_data *data)
+void	set_wall_distance(t_raycast *vars, t_ray_result *result, t_data *data)
 {
-	if (result->side == 0)
-	{
-		vars->perp_wall_dist = (vars->map_x - vars->px / data->map_s
-				+ (1 - result->step_x) / 2) / vars->dx;
-		result->wall_x = vars->py / data->map_s + vars->perp_wall_dist
-			* vars->dy;
-	}
-	else
+	float	ray_angle;
+	float	angle_diff;
+
+	vars->perp_wall_dist = (vars->map_x - vars->px / data->map_s
+			+ (1 - result->step_x) / 2) / vars->dx;
+	result->wall_x = vars->py / data->map_s + vars->perp_wall_dist
+		* vars->dy;
+	if (result->side != 0)
 	{
 		vars->perp_wall_dist = (vars->map_y - vars->py / data->map_s
 				+ (1 - result->step_y) / 2) / vars->dy;
@@ -106,4 +105,11 @@ void	calculate_texture_wall_distance(t_texture_raycast_vars *vars,
 	}
 	result->wall_x -= floor(result->wall_x);
 	result->distance = vars->perp_wall_dist * data->map_s;
+	ray_angle = atan2(vars->dy, vars->dx);
+	angle_diff = ray_angle - data->player_angle;
+	while (angle_diff > M_PI)
+		angle_diff -= 2 * M_PI;
+	while (angle_diff < -M_PI)
+		angle_diff += 2 * M_PI;
+	result->distance *= cos(angle_diff);
 }

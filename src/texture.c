@@ -33,13 +33,13 @@ static void	determine_texture_wall_side(t_ray_result *result)
 t_ray_result	cast_ray_with_texture_info(t_data *data, float ray_angle)
 {
 	t_ray_result			result;
-	t_texture_raycast_vars	vars;
+	t_raycast				vars;
 
 	normalize_ray_angle(&ray_angle);
 	init_texture_raycast(data, &vars, ray_angle);
 	setup_texture_step_dist(&vars, &result, data);
 	execute_texture_dda(&vars, &result, data);
-	calculate_texture_wall_distance(&vars, &result, data);
+	set_wall_distance(&vars, &result, data);
 	determine_texture_wall_side(&result);
 	return (result);
 }
